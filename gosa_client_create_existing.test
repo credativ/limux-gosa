@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://192.168.1.100/" />
+<title>Client anlegen obwohl bereits existent</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Client anlegen obwohl bereits existent</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/gosa/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=username</td>
+	<td>limux</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>limux</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Li Mux [limux] / Direktorium</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=plugMenuId_6</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Arbeitsstation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_continue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=cn</td>
+	<td>automatedTest1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=macAddress</td>
+	<td>00:13:33:33:33:37</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=gotoMode</td>
+	<td>label=Aktiv</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//li[@onclick=&quot;document.mainform.arg.value='workstartup'; document.mainform.submit();&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=FAIdebianMirror</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>name=FAIdebianMirror</td>
+	<td>label=http://master.mini.muenchen.de/repo</td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>name=FAIrelease</td>
+	<td>label=plophos/4.1.0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=FAIclassesSel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=FAIclassesSel</td>
+	<td>label=regexp:Modul_Standard\s\[P\]</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=AddClass</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=add_ldap_server</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//li[@onclick=&quot;document.mainform.arg.value='workservice'; document.mainform.submit();&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=AutoSync</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.tabs &gt; ul &gt; li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_finish</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Es existiert bereits ein Eintrag mit diesem Name Attribut im System!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>automatedTest1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Arbeitsstation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_continue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=cn</td>
+	<td>automatedTest1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=macAddress</td>
+	<td>00:13:33:33:33:37</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=gotoMode</td>
+	<td>label=Aktiv</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//li[@onclick=&quot;document.mainform.arg.value='workstartup'; document.mainform.submit();&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=FAIdebianMirror</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>name=FAIdebianMirror</td>
+	<td>label=http://master.mini.muenchen.de/repo</td>
+</tr>
+<tr>
+	<td>selectAndWait</td>
+	<td>name=FAIrelease</td>
+	<td>label=plophos/4.1.0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=FAIclassesSel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=FAIclassesSel</td>
+	<td>label=regexp:Modul_Standard\s\[P\]</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=AddClass</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=add_ldap_server</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//li[@onclick=&quot;document.mainform.arg.value='workservice'; document.mainform.submit();&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=AutoSync</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div.tabs &gt; ul &gt; li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_finish</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Es existiert bereits ein Eintrag mit diesem Name Attribut im System!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//button[@onclick=&quot;next_msg_dialog();&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_cancel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=listing_selected_5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Entfernen</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>(Arbeitsstation) - cn=automatedTest1,ou=workstations,ou=systems,ou=Direktorium,o=Landeshauptstadt München,c=de</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=delete_confirmed</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>automatedTest1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Liste der Systeme</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div[title=&quot;Abmelden&quot;] &gt; div.img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>GOsa Anmeldung</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
