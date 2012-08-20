@@ -13,6 +13,7 @@
 <tr><td><a href="gosa_client_create_delete.test">Client anlegen</a></td></tr>
 <tr><td><a href="gosa_client_create_existing.test">Client anlegen obwohl bereits existent</a></td></tr>
 <tr><td><a href="gosa_user_create_delete.test">Benutzer anlegen</a></td></tr>
+<tr><td><a href="gosa_user_create_existing.test">Benutzer anlegen obwohl bereits existent</a></td></tr>
 </tbody></table>
 </body>
 </html>
