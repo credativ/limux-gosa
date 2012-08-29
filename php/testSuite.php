@@ -1,4 +1,8 @@
 <?
+$path="http://localhost:4444/wd/hub/static/resource/hub.html";
+$text=@file_get_contents($path);
+if($text=="" || strpos($text,"WebDriver Hub")===FALSE)
+  die("Please start the Selenium WebDriver\n");
 $ok=$bad=0;
 foreach(glob("test_*.php") as $filename) {
   echo "running $filename\n";
