@@ -20,13 +20,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 if(!defined("LIST_NORMAL"))
-        define ('LIST_NORMAL', 0);
+	define ('LIST_NORMAL', 0);
 if(!defined("LIST_MARKED"))
-        define ('LIST_MARKED', 1);
+	define ('LIST_MARKED', 1);
 if(!defined("LIST_DISABLED"))
-        define ('LIST_DISABLED', 2);
+	define ('LIST_DISABLED', 2);
 
-class sortableListing {
+
+class sortableDeletableListing {
     private $header= null;
     private $colspecs= null;
     private $reorderable= true;
@@ -256,8 +257,10 @@ class sortableListing {
         }
         if (strpos($this->acl, 'w') === false) {
             $delete_image= $delete_img_disabled;
+	$massdelete=false;
         } else {
             $delete_image= $delete_img_enabled;
+	$massdelete=true;
         }
 
         // Do we need colspecs?
@@ -283,6 +286,8 @@ class sortableListing {
         if ($this->header) {
             $result.= " <thead>\n  <tr>\n";
             $first= " style='border-left:0'";
+	if($massdelete)
+		$this->header[0]="<input type='checkbox' id='select_all' name='select_all' title='Alle auswählen' onClick='toggle_all_(\"listing_selected_[0-9]*\$\",\"select_all\");' >";
             for ($i= 0; $i<$this->columns; $i++) {
                 $link= "href='?plug=".$_GET['plug']."&amp;PID=".$this->id."&amp;act=SORT_$i'";
                 $sorter= "";
@@ -338,6 +343,12 @@ class sortableListing {
                 $result.= "  <tr class='sortableListItem".((($nr&1)||!$this->colorAlternate)?'':'Odd')."$id' id='item_".$this->id."_$nr'$reorderable>\n";
                 $first= " style='border:0'";
 
+		//make massdelete checkbox if allowed to
+		if ($massdelete)
+			$this->displayData[$row][0]="<input type=\"checkbox\" id=\"listing_selected_$nr\" name=\"massdelete[]\" value=\"{$this->id}_$nr\" />"; //array_unshift($this->displayData[$row],"A");
+		else
+			$this->displayData[$row][0]="";
+
                 foreach ($this->displayData[$row] as $column) {
 
                     // Do NOT use the onClick statement for columns that contain links or buttons.
@@ -370,7 +381,7 @@ class sortableListing {
 #    $result.= " <input type='hidden' name='PID' value='".$this->id."' id='PID'>\n";
         $result.= " <input type='hidden' name='position_".$this->id."' id='position_".$this->id."'>\n";
         $result.= " <input type='hidden' name='reorder_".$this->id."' id='reorder_".$this->id."'>\n";
-
+	$result.= "<button name='massdelete_active' value=\"removeme\">Entfernen</button>\n";
         // Append script stuff if needed
         $result.= '<script type="text/javascript" language="javascript">';
         if ($this->reorderable) {
@@ -455,25 +466,36 @@ class sortableListing {
             }
         }
 
+	if(isset($_POST["massdelete_active"]) && $_POST["massdelete_active"]!="") {
+		$t=get_post("massdelete");
+		$targets=array();
+		foreach($t as $id) {
+			//copied from below
+			if (preg_match('/^'.$this->id.'_([0-9]+)$/', $id, $matches)) {
+				$_POST["del_".$this->id."_".$matches[1]]=true;
+			}
+		}
+	}
+
+	$this->active_index=array();
         foreach ($_POST as $key => $value) {
             $value = get_post($key);
-
             // Delete requested?
             if (preg_match('/^del_'.$this->id.'_([0-9]+)$/', $key, $matches)) {
                 if(!isset($this->mapping[$matches[1]])) return;
 
-                $this->active_index= $this->mapping[$matches[1]];
+		$me= $this->mapping[$matches[1]];
 
                 // Ignore request if mode requests it
-                if (isset($this->modes[$this->active_index]) && $this->modes[$this->active_index] == LIST_DISABLED) {
-                    $this->active_index= null;
+                if (isset($this->modes[$me]) && $this->modes[$me] == LIST_DISABLED) {
+                    $me= null;
                     continue;
                 }
     
                 // Allowed to delete?
                 $allow_delete = strpos($this->acl, 'w');
-                if (isset($this->actions[$this->active_index]['delete'])) {
-                    $this->actions[$this->active_index]['delete'];
+                if (isset($this->actions[$me]['delete'])) {
+                    $this->actions[$me]['delete'];
                 }
 
                 // Set action
@@ -481,8 +503,9 @@ class sortableListing {
 
                 // Remove value if requested
                 if ($this->instantDelete) {
-                    $this->deleteEntry($this->active_index);
+                    $this->deleteEntry($me);
                 }
+		$this->active_index[]=$me;
             }
 
 
@@ -507,6 +530,7 @@ class sortableListing {
                 $this->action= $allow_edit?"edit":"";
             }
         }
+
     }
 
 
@@ -521,9 +545,11 @@ class sortableListing {
         if ($this->action == 'reorder') {
             return array("targets" => $this->current_mapping, "mapping" => $this->mapping, "action" => $this->action);
         }
-
+	
+	if(!is_array($this->active_index))
+		$this->active_index=array($this->active_index);
         // Edit and delete
-        $result= array("targets" => array($this->active_index), "action" => $this->action);
+        $result= array("targets" => $this->active_index, "action" => $this->action);
 
         return $result;
     }
