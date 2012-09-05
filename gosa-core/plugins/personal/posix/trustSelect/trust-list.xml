@@ -44,8 +44,8 @@
     </column>
     <column>
       <label>Name</label>
-      <sortattribute>cn</sortattribute>
-      <sorttype>string</sorttype>
+      <sortAttribute>cn</sortAttribute>
+      <sortType>string</sortType>
       <value>%{cn}</value>
       <export>true</export>
     </column>
