@@ -1,0 +1,27 @@
+Creating a test is easy.
+
+Setup:
+- get Firefox and the required extensions:
+ - http://release.seleniumhq.org/selenium-ide/1.9.0/selenium-ide-1.9.0.xpi
+ - https://addons.mozilla.org/firefox/downloads/latest/selenium-ide-php-formatters/addon-selenium-ide-php-formatters-latest.xpi
+
+Create a test:
+1) Open the Test Suite in selenium/core.suite
+2) Create the test according to the Selenium IDE manuals. Read them. Even if
+   they suck. Record the whole process including login/logout and make the
+   test run even with the speedbar at 100% fast. Use clickAndWait() if
+   needed.
+3) Save the tests in the selenium/ subdirectory. Save the suite.
+4) Export the testcase in PHPUnit format and name it test_FEATURENAME.php in
+   the php/ subdirectory.
+5) Take the php file and...
+5.1) add require("class_baseGosaUserTest.php"); at the
+     beginning
+5.2) change the classname to test_FEATURENAME
+5.3) change the base class to baseGosaUserTest
+5.4) remove the codeblock regarding login and replace it with $this->login()
+5.5) remove the codeblock regarding logout and replace it with $this->logout()
+6) Run phpunit test_FEATURENAME.php and see if the test runs. If not, cry
+   and weep silently while debugging.
+7) Run the suite.
+7) Commit the Selenium test and the PHP test.

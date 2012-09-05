@@ -1,0 +1,3 @@
+1) Edit php/class_baseGosaTest.php and adjust the GOsa URL.
+2) Edit php/class_baseGosaUserTest.php and adjust the GOSA_USER/GOSA_PASS
+   constants if needed

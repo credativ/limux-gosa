@@ -1,0 +1,5 @@
+This is a repository filled to the brim with gosa-tests.
+
+To run them, just run on the commandline, in the php/ directory, the command
+"php testSuite.php". It will do the magic for you.
+
