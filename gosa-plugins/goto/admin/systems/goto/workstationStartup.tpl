@@ -46,7 +46,7 @@
     - LDAP servers  
     -->
     <tr>
-     <td colspan="2">
+     <td colspan="2" style="max-width:500px">
       <hr><h3><label for="gotoLdapServer">{t}LDAP server{/t}</label></h3>
       {render acl=$gotoLdapServerACL}
         {if $member_of_ogroup}
@@ -61,7 +61,7 @@
       {/render}
 
       {render acl=$gotoLdapServerACL_inherit}
-        <select name='ldap_server_to_add' id='ldap_server_to_add' size=1>
+        <select name='ldap_server_to_add' id='ldap_server_to_add' size="1"  style="max-width:480px">
          {html_options options=$gotoLdapServerList}	
         </select>
       {/render}
