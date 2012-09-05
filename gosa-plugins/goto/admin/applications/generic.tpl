@@ -170,3 +170,20 @@
 	focus_field('cn');
   -->
 </script>
+
+{literal}
+<script type="text/javascript" language="javascript">
+/* <!-- */
+/* script must be placed AFTER the td-close because else the DOM can't be manipulated */
+var inputElement=$("gosaApplicationExecute");
+if(inputElement && inputElement.disabled) {
+
+       inputElement.writeAttribute("type","hidden");
+       var execCommand=inputElement.getValue();
+       var parentElement=inputElement.up();
+       parentElement.insert("<span id=\"gosaApplicationExecute_readable\"></span");
+       parentElement.update(execCommand);
+}
+/* --> */
+</script>
+{/literal}
