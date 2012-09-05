@@ -239,7 +239,7 @@ class filter {
     {
         $content= "<table class='filter-wrapper' summary='"._("Search filter")."'><tr><td>".$this->renderFilterMenu()."</td><td>";
         $content.= "<div class='search-filter'>".$this->getTextfield('search_filter', set_post($this->value), $this->searches[$this->search])."</div>";
-        $content.= "&nbsp;<button class='search-filter' onClick='$(\"act\").value= \"filter-default\";$(\"exec_act\").click();' type=\"submit\" title=\""._("Delete filter")."\">".image("images/lists/trash.png")."</button>\n";
+        $content.= "&nbsp;<button class='search-filter' onClick='$(\"search_filter\").value=\"\";$(\"act\").value= \"filter-default\";$(\"exec_act\").click();' type=\"submit\" title=\""._("Delete filter")."\">".image("images/lists/trash.png")."</button>\n";
         $content.= "&nbsp;<button class='search-filter' type='submit' title='"._("Search")."'>".image("images/find.png")."</button></td></tr></table>";
 
         // Return meta data
