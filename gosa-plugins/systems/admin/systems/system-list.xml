@@ -159,7 +159,7 @@
   </definition>
 
   <table>
-    <layout>|20px;c|180px|180px|140px|140px|140px;l|70px|140px;r|</layout>
+    <layout>|20px;c|180px|140px|140px|140px|140px;l|70px|140px;r|</layout>
 
     <department>
       <value>%{filter:objectType(dn,objectClass)}</value>
@@ -236,14 +236,14 @@
      <image>images/lists/element.png[new]</image>
      <label>Create</label>
 
-     <action>
+<!--     <action>
       <name>new_device</name>
       <type>entry</type>
       <image>images/lists/edit.png</image>
       <label>Device</label>
       <depends>Device</depends>
      </action>
-
+-->
      <action>
       <name>new_goServer</name>
       <type>entry</type>

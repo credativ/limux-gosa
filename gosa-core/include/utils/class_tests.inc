@@ -323,6 +323,12 @@ class tests {
   /* \brief Check if the specified IP address $address is inside the given network */
   public static function is_in_ip_range($from, $to, $address)
   {
+    if(!tests::is_ip($from))
+      return false;
+    if(!tests::is_ip($to))
+      return false;
+    if(!tests::is_ip($address))
+      return false;
     $from = explode('.', $from);
     $to   = explode('.', $to);
     $ad   = explode('.', $address);

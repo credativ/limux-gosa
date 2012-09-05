@@ -37,7 +37,7 @@ generate_po() {
 
   echo "Extracting languages..."
   [ -f locale/${l_path}messages.po ] && rm locale/${l_path}messages.po
-  find . -name '*.[ctpix][mophn][nlpc]' | xgettext -f - --keyword=must -d Domain -L PHP -n -o locale/${l_path}messages.po
+  find . -name '*.[ctpix][mophn][nlpc]' | xgettext --from-code=utf-8 -f - --keyword=must -d Domain -L PHP -n -o locale/${l_path}messages.po
 
   echo "Merging po files with existing ones"
   error=0

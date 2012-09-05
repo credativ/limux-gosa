@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://192.168.1.100/" />
+<title>Benutzer anlegen</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Benutzer anlegen</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/gosa/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=username</td>
+	<td>limux</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=password</td>
+	<td>limux</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Li Mux [limux] / Direktorium</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=plugMenuId_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=ul.level3 &gt; li &gt; a &gt; div.img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=sn</td>
+	<td>Automated</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=givenName</td>
+	<td>Test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=uid</td>
+	<td>automated.test</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=edit_finish</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=new_password</td>
+	<td>testpass</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=repeated_password</td>
+	<td>testpass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=password_finish</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>automated.test</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=listing_selected_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Entfernen</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>cn=Test Automated,ou=Direktorium,o=Landeshauptstadt München,c=de</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=delete_confirmed</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>automated.test</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=div[title=&quot;Abmelden&quot;] &gt; div.img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>GOsa Anmeldung</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

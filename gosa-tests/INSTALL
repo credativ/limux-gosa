@@ -1,0 +1,21 @@
+The install process is complex and will suck. Do not attempt
+to run without significant beer in stock.
+
+1)  apt-get install php-pear php5-curl php5-cli php5-ldap
+2)  pear channel-discover pear.phpunit.de
+3)  pear channel-discover pear.symfony-project.com
+4)  pear update-channels
+5)  pear upgrade
+6)  pear install phpunit/PHPUnit_Selenium
+7)  check if /usr/share/php/PHPUnit/Extensions/SeleniumTestSuite.php exists
+    if not, re-run 6)
+8)  cd /usr/local/bin
+9)  as root: wget http://selenium.googlecode.com/files/selenium-server-standalone-2.25.0.jar --no-proxy
+10) repair PEAR permissions. this may not be necessary and this may mess up
+    security... but fuck it. as root: chmod -R a+rx /usr/share/php
+11) repair Selenium server permissions. as per 10), run as
+    root: chmod -R a+rx /usr/local/bin/selenium-server-standalone-2.25.0.jar
+12) in case your GOsa server is a local VM or not reachable by a proxy,
+    modify /etc/firefox-XXX/pref/firefox.js and comment out the line
+    with network.proxy.autoconfig_url
+13) ensure that the gosa-si daemon runs on the server -.-

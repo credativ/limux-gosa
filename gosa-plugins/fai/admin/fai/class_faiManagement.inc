@@ -416,12 +416,22 @@ class faiManagement extends management
       }
     }
   }
-  
+  private function getParentDir($basedn) {
+    return(preg_replace("/[^,]*[,]*[ ]*(.*)/", "$1", $basedn));
+  }  
+
   /*! \brief Returns profiles the given class is in */
-  private function getProfilesOfClass($class)
+  private function getProfilesOfClass($class,$dn="")
   {
     $ldap = $this->config->get_ldap_link();
-    $ldap->cd($this->config->current['BASE']); 
+    //warning: this will mess up for subreleases like plophos/4.1.0
+    if($dn!="") {
+      $parent=$this->getParentDir($dn);
+      $parent=$this->getParentDir($parent);
+      $parent=$this->getParentDir($parent);
+      $ldap->cd($parent);
+    } else
+      $ldap->cd($this->config->current['BASE']); 
     
     $ldap->search('(objectClass=FAIprofile)', array(), TRUE);
                
@@ -459,7 +469,7 @@ class faiManagement extends management
         $this->dns[] = $obj['dn'];
       }
       
-      $profiles = $this->getProfilesOfClass($obj['cn'][0]);
+      $profiles = $this->getProfilesOfClass($obj['cn'][0],$obj["dn"]);
       foreach ($profiles as $profile) {
         $used_in_profiles[] = array($profile, $obj['cn'][0]);
       }
