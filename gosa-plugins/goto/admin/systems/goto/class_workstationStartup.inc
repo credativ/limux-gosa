@@ -488,10 +488,10 @@ class workstartup extends plugin
             /* Convert old style entry */
             if (!preg_match('%:ldaps?://%', $server)){
                 $server= "ldap://".preg_replace('/^([^:]+):/', '\1/', $server);
-        } else {
-            $server= preg_replace("/^[^:]+:/", "", $server);
-            $lData[$key] = array('data'=>array($server));
-        }    
+            } else {
+                $server= preg_replace("/^[^:]+:/", "", $server);
+            }   
+            $lData[$key] = array('data'=>array($server)); 
         }
         $this->ldapList->setListData($data,$lData);
         $this->ldapList->update();
