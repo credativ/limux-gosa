@@ -1,5 +1,5 @@
 Source: gosa
-Section: web
+Section: lhm
 Priority: optional
 Maintainer: Matthias S. Benkmann <mux2005@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), xsltproc, golang-go (>= 2:1.4)

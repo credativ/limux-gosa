@@ -1,3 +1,11 @@
+gosa (2.8.163-0lhm1) tramp; urgency=low
+
+  * build for tramp
+  * move to lhm section
+  * trac #14841 
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Thu, 21 May 2015 14:36:30 +0200
+
 gosa (2.8.163) trusty; urgency=medium
 
   * gosa-fai-helpers: pxelinux.php fix bug that "[!faistate]" was printed out
