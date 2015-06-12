@@ -1,3 +1,9 @@
+gosa (2.8.163-0lhm4) tramp; urgency=low
+
+  * revert commit 8af2d0f5da0a468955911f05a1dde13be499b3a4
+
+ -- Patric Busanny <patric.busanny@muenchen.de>  Fri, 12 Jun 2015 13:04:50 +0200
+
 gosa (2.8.163-0lhm3) tramp; urgency=low
 
   * added folder /etc/gosa-si
