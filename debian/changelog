@@ -2,6 +2,7 @@ gosa (2.8.163-0lhm4) tramp; urgency=low
 
   * revert commit 8af2d0f5da0a468955911f05a1dde13be499b3a4
   * revert commit 1bc87d6679a548cf3f313254f5e634280038b819
+  * revert commit 7d1b5c2cdf59db3c6ed7d2e53db2d13e02c2fed7
 
  -- Patric Busanny <patric.busanny@muenchen.de>  Fri, 12 Jun 2015 13:04:50 +0200
 
