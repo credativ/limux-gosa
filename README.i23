@@ -1,0 +1,6 @@
+you can create a *orig.tar.bz2 when it's not there with:
+
+tar cjvf ../gosa_2.8.163.orig.tar.bz2 gosa-* go-susi/ post-commit README.md
+
+(adopt version number to yours)
+
