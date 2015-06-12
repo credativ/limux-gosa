@@ -1,1 +1,2 @@
 usr/sbin/gosa-si-server  usr/sbin/go-susi
+lib/init/upstart-job etc/init.d/gosa-si

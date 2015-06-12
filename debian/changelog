@@ -1,3 +1,16 @@
+gosa (2.8.163-0lhm3) tramp; urgency=low
+
+  * added folder /etc/gosa-si
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Fri, 12 Jun 2015 11:50:00 +0200
+
+gosa (2.8.163-0lhm2) tramp; urgency=low
+
+  * added link for gosa-si 
+    in /etc/init.d
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Fri, 12 Jun 2015 09:15:49 +0200
+
 gosa (2.8.163-0lhm1) tramp; urgency=low
 
   * build for tramp

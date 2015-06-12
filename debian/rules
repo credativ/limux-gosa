@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+#export DH_VERBOSE=1
+
 GOSAVERSION:=$(shell dpkg-parsechangelog | sed -n 's/^Version: //p')
 
 %:
