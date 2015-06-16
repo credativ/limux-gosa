@@ -1,6 +1,16 @@
 you can create a *orig.tar.bz2 when it's not there with:
 
-tar cjvf ../gosa_2.8.163.orig.tar.bz2 gosa-* go-susi/ post-commit README.md
+tar cjvf ../gosa_2.8.163.orig.tar.bz2 gosa-* go-susi/ post-commit README.md README.i23
 
 (adopt version number to yours)
+
+-------------------------------------
+build with "old" debhelper version:
+comment the line:
+deb http://buildserv-next/user-repos/repo-glg tramp lhm restricted main universe ff multiverse
+
+in
+
+/srv/chroots/lhm-tramp-i386/etc/apt/sources.list.d/user-repo.list
+
 

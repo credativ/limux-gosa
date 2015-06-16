@@ -1,3 +1,11 @@
+gosa (2.8.163-0lhm5) tramp; urgency=low
+
+  * new link for apache configuration
+    for gosa-si pxe/ldap
+  * added libc6 dependency for gosa-si
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Tue, 16 Jun 2015 12:40:11 +0200
+
 gosa (2.8.163-0lhm4) tramp; urgency=low
 
   * revert commit 8af2d0f5da0a468955911f05a1dde13be499b3a4
