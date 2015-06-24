@@ -1,3 +1,16 @@
+gosa (2.8.163-0lhm6) tramp; urgency=low
+
+  * in control, concerning gosa-si: 
+    moved gosa-fai-helpers from 
+    "Recommends" to "Depends"
+    because in VTS 5.0 
+    aptitude is not configured
+    to install "Recommends"
+  * also added gosa-debdb as 
+    "Depends" to gosa-si
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Wed, 24 Jun 2015 16:52:25 +0200
+
 gosa (2.8.163-0lhm5) tramp; urgency=low
 
   * new link for apache configuration
