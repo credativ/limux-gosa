@@ -33,9 +33,9 @@ Description: GOsa² development utilities
 
 Package: gosa-si
 Architecture: any
-Depends: ${misc:Depends}, ldap-utils, ${shlibs:Depends}, gosa-fai-helpers, gosa-debdb 
+Depends: ${misc:Depends}, ldap-utils, ${shlibs:Depends}
 Suggests: tidy
-Recommends: 
+Recommends: gosa-fai-helpers
 Conflicts: gosa-si-server, gosa-si-client, gosa-si-common, go-susi (<< 9)
 Replaces: gosa-si-server, gosa-si-client, gosa-si-common, go-susi (<< 9)
 Provides: gosa-si-server, gosa-si-client, gosa-si-common, go-susi

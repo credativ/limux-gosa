@@ -1,3 +1,16 @@
+gosa (2.8.163-0lhm7) tramp; urgency=low
+
+  * removed gosa-fai-helpers and 
+    gosa-debdb from Depends as we 
+    will use them now in fai
+    package lists if necessary.
+    gosa-debdb is not necessary on
+    clients.
+  * moved link for apache config from
+    gosa-si to gosa-fai-helpers
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Mon, 29 Jun 2015 14:39:49 +0200
+
 gosa (2.8.163-0lhm6) tramp; urgency=low
 
   * in control, concerning gosa-si: 
