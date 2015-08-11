@@ -2,7 +2,7 @@ Source: gosa
 Section: lhm
 Priority: optional
 Maintainer: Matthias S. Benkmann <mux2005@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), xsltproc, golang-go (>= 2:1.4)
+Build-Depends: debhelper (>= 7.0.50~), xsltproc, golang-go (>= 2:1.4), libfile-fcntllock-perl
 Build-Depends-Indep: po-debconf
 Standards-Version: 3.9.4
 Homepage: https://github.com/mbenkmann/limux-gosa
