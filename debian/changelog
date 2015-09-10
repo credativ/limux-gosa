@@ -1,3 +1,57 @@
+gosa (2.8.163-0lhm8) tramp; urgency=low
+
+  [ Max Harmathy ]
+  * Do not use patches for file management.
+    This relalizes the source changes by simply restoring a file in the
+    debian directory and installing from right location.
+  * Add FcntlLock to build dependencies
+
+  [ Ludwig Cornelius ]
+  * removed gosa-fai-helpers from recommends
+    because recommends are installed by
+    default on the clients.
+    This would cause an apache to be
+    installed because gosa-fai-helpers
+    depends indirectly on some virtual
+    package that leads to an apache
+    install.
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Wed, 09 Sep 2015 16:32:22 +0200
+
+gosa (2.8.163-0lhm7) tramp; urgency=low
+
+  * removed gosa-fai-helpers and
+    gosa-debdb from Depends as we
+    will use them now in fai
+    package lists if necessary.
+    gosa-debdb is not necessary on
+    clients.
+  * moved link for apache config from
+    gosa-si to gosa-fai-helpers
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Mon, 29 Jun 2015 14:39:49 +0200
+
+gosa (2.8.163-0lhm6) tramp; urgency=low
+
+  * in control, concerning gosa-si:
+    moved gosa-fai-helpers from
+    "Recommends" to "Depends"
+    because in VTS 5.0
+    aptitude is not configured
+    to install "Recommends"
+  * also added gosa-debdb as
+    "Depends" to gosa-si
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Wed, 24 Jun 2015 16:52:25 +0200
+
+gosa (2.8.163-0lhm5) tramp; urgency=low
+
+  * new link for apache configuration
+    for gosa-si pxe/ldap
+  * added libc6 dependency for gosa-si
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Tue, 16 Jun 2015 12:40:11 +0200
+
 gosa (2.8.163-0lhm4) tramp; urgency=low
 
   * revert commit 8af2d0f5da0a468955911f05a1dde13be499b3a4
