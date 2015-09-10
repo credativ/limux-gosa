@@ -1,3 +1,12 @@
+gosa (2.8.163lhm~ldap-tng+1.0) tramp; urgency=medium
+
+  * Add documentation to README
+  * Make packaging format native
+    This avoids handling patches and pristine tarballs and cleaning source
+    tree.
+
+ -- Max Harmathy <max.harmathy@muenchen.de>  Thu, 10 Sep 2015 15:28:50 +0200
+
 gosa (2.8.163-0lhm8) tramp; urgency=low
 
   [ Max Harmathy ]
