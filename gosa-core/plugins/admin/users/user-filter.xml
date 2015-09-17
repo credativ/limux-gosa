@@ -84,4 +84,18 @@
     </autocomplete>
   </search>
 
+  <search>
+    <tag>department</tag>
+    <label>Department</label>
+    <query>
+      <backend>LDAP</backend>
+      <filter>(&amp;(objectClass=gosaAccount)(ou=$))</filter>
+    </query>
+    <autocomplete>
+      <attribute>ou</attribute>
+      <frequency>0.5</frequency>
+      <characters>3</characters>
+    </autocomplete>
+  </search>
+
 </filterdef>
