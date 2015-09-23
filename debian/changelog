@@ -1,3 +1,9 @@
+gosa (2.8.163.lhm7) UNRELEASED; urgency=medium
+
+  * Set source format to 3.0 (native) and adapt the version.
+
+ -- Felix Geyer <felix.geyer@credativ.de>  Thu, 17 Sep 2015 13:59:26 +0200
+
 gosa (2.8.163-0lhm7) tramp; urgency=low
 
   * removed gosa-fai-helpers and 
