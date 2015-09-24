@@ -3,7 +3,7 @@
 <filterdef>
   <definition>
     <category>application</category>
-    <initial>true</initial>
+    <initial>config</initial>
     <default>default</default>
     <scope>auto</scope>
     <attribute>dn</attribute>
