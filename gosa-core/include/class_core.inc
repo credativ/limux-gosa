@@ -1070,7 +1070,16 @@ DEBUG_SI      = 256"),
                                 "check"         => "gosaProperty::isBool",
                                 "migrate"       => "",
                                 "group"         => "core",
-                                "mandatory"     => TRUE)
+                                "mandatory"     => TRUE),
+                        array(
+                                "name"          => "showViewsInitial",
+                                "type"          => "bool",
+                                "default"       => "true",
+                                "description"   => _("Controls whether the main views initally show entries."),
+                                "check"         => "gosaProperty::isBool",
+                                "migrate"       => "",
+                                "group"         => "core",
+                                "mandatory"     => FALSE)
                             )));
     }
 }
