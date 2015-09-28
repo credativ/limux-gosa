@@ -3,7 +3,7 @@ Section: web
 Priority: optional
 Maintainer: GOsa packages maintainers group <gosa-pkg@oss.gonicus.de>
 Uploaders: Cajus Pollmeier <cajus@debian.org>, Benoit Mortier <benoit.mortier@opensides.be>
-Build-Depends: debhelper (>= 7.0.50~)
+Build-Depends: debhelper (>= 7.0.50~), libfile-fcntllock-perl
 Build-Depends-Indep: po-debconf
 Standards-Version: 3.9.1
 Homepage: https://oss.gonicus.de/labs/gosa/

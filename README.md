@@ -1,3 +1,53 @@
+Entwicklerdokumentation
+=======================
+
+
+Neue Upstream-Version
+---------------------
+
+
+Der master-Branch von Upstream wird auf dem Branch *upstream* verfolgt.
+
+	git checkout upstream
+
+Dazu kann man sich einen, falls noch nicht geschehen, einen entsprechenden Remote-Eintrag erstellen:
+
+	git remote add github https://github.com/mbenkmann/limux-gosa.git
+
+
+Dann werden die Änderungen eingepflegt:
+
+	git fetch github
+	git merge github/master
+
+Es wird die Versionsnummer ermittelt:
+
+	head debian/changelog
+
+Es wird ein Tag mit der Versionsnummer erstellt:
+
+	git tag upstream/<Version>
+
+Dann werden die Änderungen auf den git-Server übertragen:
+
+	git push origin upstream
+	git push origin --tags
+
+
+Entwicklung
+-----------
+
+### build with "old" debhelper version:
+
+comment the line:
+deb http://buildserv-next/user-repos/repo-glg tramp lhm restricted main universe ff multiverse
+
+in
+
+/srv/chroots/lhm-tramp-i386/etc/apt/sources.list.d/user-repo.list
+
+
+
 GOsa² 2.8
 =========
 

@@ -1,13 +1,36 @@
-gosa (2.8.163.lhm7) UNRELEASED; urgency=medium
+gosa (2.8.163lhm~ldap-tng+1.0) tramp; urgency=medium
 
-  * Set source format to 3.0 (native) and adapt the version.
+  * Add documentation to README
+  * Make packaging format native
+    This avoids handling patches and pristine tarballs and cleaning source
+    tree.
 
- -- Felix Geyer <felix.geyer@credativ.de>  Thu, 17 Sep 2015 13:59:26 +0200
+ -- Max Harmathy <max.harmathy@muenchen.de>  Thu, 10 Sep 2015 15:28:50 +0200
+
+gosa (2.8.163-0lhm8) tramp; urgency=low
+
+  [ Max Harmathy ]
+  * Do not use patches for file management.
+    This relalizes the source changes by simply restoring a file in the
+    debian directory and installing from right location.
+  * Add FcntlLock to build dependencies
+
+  [ Ludwig Cornelius ]
+  * removed gosa-fai-helpers from recommends
+    because recommends are installed by
+    default on the clients.
+    This would cause an apache to be
+    installed because gosa-fai-helpers
+    depends indirectly on some virtual
+    package that leads to an apache
+    install.
+
+ -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Wed, 09 Sep 2015 16:32:22 +0200
 
 gosa (2.8.163-0lhm7) tramp; urgency=low
 
-  * removed gosa-fai-helpers and 
-    gosa-debdb from Depends as we 
+  * removed gosa-fai-helpers and
+    gosa-debdb from Depends as we
     will use them now in fai
     package lists if necessary.
     gosa-debdb is not necessary on
@@ -19,13 +42,13 @@ gosa (2.8.163-0lhm7) tramp; urgency=low
 
 gosa (2.8.163-0lhm6) tramp; urgency=low
 
-  * in control, concerning gosa-si: 
-    moved gosa-fai-helpers from 
+  * in control, concerning gosa-si:
+    moved gosa-fai-helpers from
     "Recommends" to "Depends"
-    because in VTS 5.0 
+    because in VTS 5.0
     aptitude is not configured
     to install "Recommends"
-  * also added gosa-debdb as 
+  * also added gosa-debdb as
     "Depends" to gosa-si
 
  -- Ludwig Cornelius <ludwig.cornelius@muenchen.de>  Wed, 24 Jun 2015 16:52:25 +0200

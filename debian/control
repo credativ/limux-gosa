@@ -2,7 +2,7 @@ Source: gosa
 Section: lhm
 Priority: optional
 Maintainer: Matthias S. Benkmann <mux2005@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), xsltproc, golang-go (>= 2:1.4)
+Build-Depends: debhelper (>= 7.0.50~), xsltproc, golang-go (>= 2:1.4), libfile-fcntllock-perl
 Build-Depends-Indep: po-debconf
 Standards-Version: 3.9.4
 Homepage: https://github.com/mbenkmann/limux-gosa
@@ -33,9 +33,8 @@ Description: GOsa² development utilities
 
 Package: gosa-si
 Architecture: any
-Depends: ${misc:Depends}, ldap-utils, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, ldap-utils
 Suggests: tidy
-Recommends: gosa-fai-helpers
 Conflicts: gosa-si-server, gosa-si-client, gosa-si-common, go-susi (<< 9)
 Replaces: gosa-si-server, gosa-si-client, gosa-si-common, go-susi (<< 9)
 Provides: gosa-si-server, gosa-si-client, gosa-si-common, go-susi
