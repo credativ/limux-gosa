@@ -4015,5 +4015,12 @@ function translate_objectpath_enabled()
         && isset($config->current['USERSTORERDN']);
 }
 
+/*! \brief    Returns true iff the string haystack ends with needle, else false.
+ */
+function str_endswith($haystack, $needle)
+{
+    return (substr($haystack, -strlen($needle)) === $needle);
+}
+
 // vim:tabstop=2:expandtab:shiftwidth=2:filetype=php:syntax:ruler:
 ?>
