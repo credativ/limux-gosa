@@ -105,6 +105,12 @@ class filterLDAP {
           $method = "ls";
       }
 
+      // add attributes needed for dn translation unless all attributes are fetched anyway
+      if (translate_objectpath_enabled() && !empty($attributes)) {
+          $attributes[] = "lhmObjectPath";
+          $attributes[] = "cn";
+      }
+
       if ($method == "ls") {
           $ldap->ls("(&$filter$dnFilter)", $base, $attributes, TRUE,
             $include_empty_tags);
@@ -123,6 +129,13 @@ class filterLDAP {
          result array */
       while($attrs = $ldap->fetch()) {
         $dn= $ldap->getDN();
+
+        if (translate_objectpath_enabled()) {
+          // translate from stored dn to logical dn
+          if (strpos($dn, $config->current['STOREBASE']) !== false) {
+            $dn = "cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0];
+          }
+        }
 
         /* Convert dn into a printable format */
         if ($flags & GL_CONVERT){
