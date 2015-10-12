@@ -723,6 +723,11 @@ class config  {
     {
         global $config;
 
+        if (translate_objectpath_enabled()) {
+            $this->get_departments_translate($ignore_dn);
+            return;
+        }
+
         /* Initialize result hash */
         $result= array();
         $administrative= array();
@@ -789,6 +794,60 @@ class config  {
             /* Only assign non-root departments */
             if ($dn != $result['/']){
                 $result[$c_dn]= $dn;
+            }
+        }
+
+        $this->adepartments= $administrative;
+        $this->departments= $result;
+    }
+
+    function get_departments_translate($ignore_dn)
+    {
+        global $config;
+
+        /* Initialize result hash */
+        $result= array();
+        $administrative= array();
+        $result['/']= $this->current['BASE'];
+        $this->tdepartments= array();
+
+        $ldap= $this->get_ldap_link();
+        $ldap->cd ($this->current['USERSTORERDN'] . $this->current['STOREBASE']);
+        $ldap->search ("(lhmObjectPath=*)", array("lhmObjectPath"));
+
+        $unique_ous = array();
+        while ($attrs= $ldap->fetch()){
+            $lhm_object_path = $attrs["lhmObjectPath"][0];
+
+            if (!preg_match("/^([^=]+)=([^,]+)/", $lhm_object_path, $matches)) {
+                continue;
+            }
+            $type = $matches[1];
+            $department_name = $matches[2];
+
+            $pos = strrpos($lhm_object_path, $result['/']);
+            if ($pos !== false) {
+                $relative_dn = substr($lhm_object_path, 0, strlen($lhm_object_path) - strlen($result['/']) - 1);
+            }
+            else {
+                $relative_dn = $lhm_object_path;
+            }
+
+            $this->department_info[$lhm_object_path] = array("img" => "images/lists/folder.png",
+                    "description" => $department_name,
+                    "name" => $department_name);
+            // TODO: we don't have a gosa unit tag for departments
+            $this->tdepartments[$lhm_object_path]= "";
+
+            if ($lhm_object_path == $ignore_dn){
+                continue;
+            }
+
+            $c_dn = convert_department_dn($relative_dn)." ($type)";
+
+            /* Only assign non-root departments */
+            if ($lhm_object_path != $result['/']){
+                $result[$c_dn]= $lhm_object_path;
             }
         }
 

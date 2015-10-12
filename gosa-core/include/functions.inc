@@ -4004,5 +4004,16 @@ function fix_dos_linebreaks($str)
     return preg_replace('/\\r\\n/', "\n", $str);
 }
 
+/*! \brief    Check if we need to translate the base using the lhmObjectPath attribute
+ */
+function translate_objectpath_enabled()
+{
+    global $config;
+
+    return isset($config->current['STOREBASE'])
+        && !empty($config->current['STOREBASE'])
+        && isset($config->current['USERSTORERDN']);
+}
+
 // vim:tabstop=2:expandtab:shiftwidth=2:filetype=php:syntax:ruler:
 ?>

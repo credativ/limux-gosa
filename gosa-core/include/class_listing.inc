@@ -1547,6 +1547,10 @@ function refreshBasesList()
 
 function getDepartments()
 {
+    if (translate_objectpath_enabled()) {
+        return $this->getDepartmentsTranslate();
+    }
+
     $departments= array();
     $ui= get_userinfo();
 
@@ -1585,6 +1589,50 @@ function getDepartments()
 
         // Move to the result list
         $departments[]= $department;
+    }
+
+    return $departments;
+}
+
+function getDepartmentsTranslate()
+{
+    // Get a list of direct sub-departments
+
+    global $config;
+
+    // TODO: ACLs
+
+    $departments = array();
+    foreach ($config->department_info as $dn => $deparment_info) {
+        // check if it's the base itself
+        if ($dn == $this->base){
+            continue;
+        }
+
+        $pos = strpos($dn, $this->base);
+        // check if it's an unrelated department
+        if ($pos === false){
+            continue;
+        }
+
+        $local_part = substr($dn, 0, $pos);
+        // check if it's a sub-sub department
+        if (substr_count($local_part, ",") > 1){
+            continue;
+        }
+
+        // contruct the result of an equivalent ldap query
+        $department = array();
+        $department["description"] = array("count" => 1, 0 => $deparment_info["description"]);
+        $department[0] = "description";
+        $department["objectClass"] = array( "count" => 2, 0 => "gosaDepartment", 1 => "organizationalUnit" );
+        $department[1] = "objectClass";
+        $department["ou"] = array("count" => 1, 0 => $deparment_info["name"]);
+        $department[2] = "ou";
+        $department["count"] = 3;
+        $department["dn"] = $dn;
+        $department["sort-attribute"] = "ou";
+        $departments[] = $department;
     }
 
     return $departments;
