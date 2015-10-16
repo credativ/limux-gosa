@@ -107,8 +107,13 @@ class filterLDAP {
 
       // add attributes needed for dn translation unless all attributes are fetched anyway
       if (translate_objectpath_enabled() && !empty($attributes)) {
-          $attributes[] = "lhmObjectPath";
-          $attributes[] = "cn";
+          $additionalAttributes = array("lhmObjectPath", "cn");
+
+          foreach ($additionalAttributes as $attr) {
+              if (!in_array($attr, $attributes)) {
+                  $attributes[] = $attr;
+              }
+          }
       }
 
       if ($method == "ls") {
