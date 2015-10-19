@@ -360,6 +360,9 @@ class LDAP
             $local = "";
         }
         $objectPath = substr($base, $pos);
+        // objectPath has literal "\2C" so prevent it from being unescaped to ","
+        $objectPath = str_replace("\001CO", "\\2C", $objectPath);
+        $objectPath = LDAP::prepare4filter($objectPath);
 
         $local_parts = preg_split("/,/", $local, -1, PREG_SPLIT_NO_EMPTY);
         if ($recurse) {
