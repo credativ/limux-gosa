@@ -92,6 +92,10 @@ class servgeneric extends plugin
         } else {
             $this->base= preg_replace ("/^[^,]+,".preg_quote(get_ou("servgeneric", "serverRDN"), '/')."/i", "", $this->dn);
         }
+        if(!isset($this->config->idepartments[$this->base])){
+          msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
+          $this->base  = session::get('CurrentMainBase');
+        }
         $this->netConfigDNS = new termDNS($this->config,$this,$this->objectclasses);
         $this->netConfigDNS->set_acl_category("server");
         $this->netConfigDNS->set_acl_base($this->base);

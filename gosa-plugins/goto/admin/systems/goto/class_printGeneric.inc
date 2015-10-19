@@ -120,7 +120,7 @@ class printgeneric extends plugin
             }
 
             if(!isset($this->config->idepartments[$this->base])){
-                msg_dialog::display(_("Internal error"), sprintf(_("Cannot determine a valid department for this object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
+                msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
                 $this->base  = session::get('CurrentMainBase');
             }
         }
