@@ -1,3 +1,9 @@
+gosa (2.8.163lhm~ldap~tng+1.1) UNRELEASED; urgency=medium
+
+  * Switch to a native version number.
+
+ -- Felix Geyer <felix.geyer@credativ.de>  Tue, 20 Oct 2015 16:05:57 +0200
+
 gosa (2.8.163lhm~ldap-tng+1.0) tramp; urgency=medium
 
   * Add documentation to README
