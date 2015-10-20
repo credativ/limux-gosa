@@ -87,6 +87,13 @@ class filter {
                 $this->xmlSearches[$search['tag']]= $search;
 
             }
+
+            $this->xmlSearches['orphaned_objects']['tag'] = "orphaned_objects";
+            $this->xmlSearches['orphaned_objects']['label'] = "Orphaned objects";
+            $query = array();
+            $query['backend'] = "VirtualOrphanedObjects";
+            $query['filter'] = "";
+            $this->xmlSearches['orphaned_objects']['query'] = array($query);
         } else {
             return false;
         }
@@ -168,7 +175,11 @@ class filter {
 
         // Try to use it, but bail out if there's no help...
         if (isset($this->searches[$method])) {
-            $this->query= $this->searches[$method]['query'];
+            if ($method == "orphaned_objects") {
+                $this->query= $this->searches[$this->defaultSearch]['query'];
+            } else {
+                $this->query= $this->searches[$method]['query'];
+            }
             $this->search= $method;
         } else {
             die ("Invalid search module!");
@@ -263,7 +274,7 @@ class filter {
 
     function query()
     {
-        global $class_mapping;
+        global $class_mapping, $config;
         $result= array();
 
         // Return empty list if initial is not set
@@ -302,7 +313,16 @@ class filter {
             // Do not replace escaped \$ - This is required to be able to search for e.g. windows machines.
             $filter = preg_replace("/\\$/", $this->prepareFilterValue($this->value), $filter);
 
-            $result= array_merge($result, call_user_func(array($backend, 'query'), $this->base, $this->scope, $filter, $this->attributes, $this->category, $this->objectStorage));
+            $attributes = $this->attributes;
+
+            if ($this->search == "orphaned_objects") {
+              $scope = "sub";
+              $attributes[] = "lhmObjectPath";
+            } else {
+              $scope = $this->scope;
+            }
+
+            $result= array_merge($result, call_user_func(array($backend, 'query'), $this->base, $scope, $filter, $this->attributes, $this->category, $this->objectStorage));
         }
 
         // Filter duplicates
@@ -320,6 +340,33 @@ class filter {
           $dn = $entry['dn'];
           if(in_array($dn, $this->excludeDns)) {
             unset($result[$id]);
+          }
+        }
+
+        // If the orphaned_objects filter is active: Exclude all entries with a valid lhmObjectPath
+        if ($this->search == "orphaned_objects") {
+          $validObjectPaths = array();
+
+          foreach ($config->departments as $path => $dn) {
+            if (is_array($this->objectStorage)) {
+              foreach ($this->objectStorage as $prefix) {
+                $validObjectPaths[] = $prefix.$dn;
+              }
+            } else {
+              $validObjectPaths[] = $this->objectStorage.$dn;
+            }
+          }
+
+          foreach ($result as $id => $entry) {
+            if (!isset($entry['lhmObjectPath'][0])) {
+              continue;
+            }
+
+            $lhmObjectPath = $entry['lhmObjectPath'][0];
+
+            if(in_array($lhmObjectPath, $validObjectPaths)) {
+              unset($result[$id]);
+            }
           }
         }
         
