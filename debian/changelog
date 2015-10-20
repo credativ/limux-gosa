@@ -1,4 +1,4 @@
-gosa (2.8.163lhm~ldap~tng+1.1) UNRELEASED; urgency=medium
+gosa (2.8.163lhm~ldap+tng+1.1) UNRELEASED; urgency=medium
 
   * Switch to a native version number.
 
