@@ -1548,7 +1548,7 @@ function refreshBasesList()
 function getDepartments()
 {
     if (translate_objectpath_enabled()) {
-        return $this->getDepartmentsTranslate();
+        return $this->getTranslatedDepartments();
     }
 
     $departments= array();
@@ -1594,7 +1594,7 @@ function getDepartments()
     return $departments;
 }
 
-function getDepartmentsTranslate()
+function getTranslatedDepartments()
 {
     // Get a list of direct sub-departments
 
@@ -1606,7 +1606,7 @@ function getDepartmentsTranslate()
     // Load departments allowed by ACL
     $validDepartments = $ui->get_module_departments($this->categories);
 
-    foreach ($config->department_info as $dn => $deparment_info) {
+    foreach ($config->department_info as $dn => $department_info) {
         // check if it's the base itself
         if ($dn == $this->base){
             continue;
@@ -1630,11 +1630,11 @@ function getDepartmentsTranslate()
 
         // contruct the result of an equivalent ldap query
         $department = array();
-        $department["description"] = array("count" => 1, 0 => $deparment_info["description"]);
+        $department["description"] = array("count" => 1, 0 => $department_info["description"]);
         $department[0] = "description";
         $department["objectClass"] = array( "count" => 2, 0 => "gosaDepartment", 1 => "organizationalUnit" );
         $department[1] = "objectClass";
-        $department["ou"] = array("count" => 1, 0 => $deparment_info["name"]);
+        $department["ou"] = array("count" => 1, 0 => $department_info["name"]);
         $department[2] = "ou";
         $department["count"] = 3;
         $department["dn"] = $dn;
