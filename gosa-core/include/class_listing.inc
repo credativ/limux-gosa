@@ -1600,9 +1600,12 @@ function getDepartmentsTranslate()
 
     global $config;
 
-    // TODO: ACLs
+    $departments= array();
+    $ui= get_userinfo();
 
-    $departments = array();
+    // Load departments allowed by ACL
+    $validDepartments = $ui->get_module_departments($this->categories);
+
     foreach ($config->department_info as $dn => $deparment_info) {
         // check if it's the base itself
         if ($dn == $this->base){
@@ -1618,6 +1621,10 @@ function getDepartmentsTranslate()
         $local_part = substr($dn, 0, $pos);
         // check if it's a sub-sub department
         if (substr_count($local_part, ",") > 1){
+            continue;
+        }
+
+        if (!in_array_strict($dn, $validDepartments)) {
             continue;
         }
 
