@@ -108,10 +108,7 @@ class ogroup extends plugin
         } else {
             $this->base= preg_replace("/^[^,]+,".preg_quote(get_ou("group", "ogroupRDN"), '/')."/i","",$this->dn);
 
-            if(!isset($this->config->idepartments[$this->base])){
-                msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
-                $this->base  = session::get('CurrentMainBase');
-            }
+            $this->correct_orphaned_base();
         }
 
         /* Detect all workstations, which are already assigned to an object group  

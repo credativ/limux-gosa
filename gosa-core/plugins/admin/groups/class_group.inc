@@ -193,10 +193,7 @@ class group extends plugin
             /* Get object base */
             $this->base =preg_replace ("/^[^,]+,".preg_quote(get_groups_ou(), '/')."/i","",$this->dn);
 
-            if(!isset($this->config->idepartments[$this->base])){
-                msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
-                $this->base  = session::get('CurrentMainBase');
-            }
+            $this->correct_orphaned_base();
         }
         $this->orig_base = $this->base;
 

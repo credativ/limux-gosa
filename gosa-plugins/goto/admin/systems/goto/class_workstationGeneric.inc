@@ -160,10 +160,7 @@ class workgeneric extends plugin
             $this->base= preg_replace ("/^[^,]+,".preg_quote(get_ou("workgeneric", "workstationRDN"), '/')."/i", "", $this->dn);
         }
 
-        if(!isset($this->config->idepartments[$this->base])){
-            msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
-            $this->base  = session::get('CurrentMainBase');
-        }
+        $this->correct_orphaned_base();
 
         /* Create an array of all Syslog servers */
         $tmp = $this->config->data['SERVERS']['SYSLOG'];

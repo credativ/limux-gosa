@@ -1778,6 +1778,13 @@ class plugin
           }
       }
   }
+
+  protected function correct_orphaned_base(){
+      if(!isset($this->config->idepartments[$this->base])){
+          msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
+          $this->base = session::get('CurrentMainBase');
+      }
+  }
 }
 
 // vim:tabstop=2:expandtab:shiftwidth=2:filetype=php:syntax:ruler:
