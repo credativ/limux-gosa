@@ -1612,15 +1612,13 @@ function getTranslatedDepartments()
             continue;
         }
 
-        $pos = strpos($dn, $this->base);
-        // check if it's an unrelated department
-        if ($pos === false){
-            continue;
-        }
+        $local_part = strstr($dn, $this->base, true);
 
-        $local_part = substr($dn, 0, $pos);
-        // check if it's a sub-sub department
-        if (substr_count($local_part, ",") > 1){
+        if ($local_part === false){
+            // unrelated department
+            continue;
+        } else if (substr_count($local_part, ",") > 1){
+            // sub-sub department
             continue;
         }
 
