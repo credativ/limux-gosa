@@ -2,7 +2,7 @@
 
 <filterdef>
   <definition>
-    <initial>true</initial>
+    <initial>config</initial>
     <category>server</category>
     <category>workstation</category>
     <category>terminal</category>

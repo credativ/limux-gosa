@@ -56,6 +56,8 @@ class filter {
 
     function load($filename)
     {
+        global $config;
+
         $contents = file_get_contents($filename);
         $xmlData= xml::xml2array($contents, 1);
 
@@ -127,10 +129,14 @@ class filter {
         if (!is_array($this->attributes)) {
             $this->attributes= array($this->attributes);
         }
-
         // Transfer initial value
-        if (isset($xmlData['definition']['initial']) && $xmlData['definition']['initial'] == "true"){
-            $this->initial= true;
+        if (isset($xmlData['definition']['initial'])) {
+            if ($xmlData['definition']['initial'] == "true"){
+                $this->initial= true;
+            }
+            else if ($xmlData['definition']['initial'] == "config"){
+                $this->initial= ($config->get_cfg_value("core","showViewsInitial") != "false");
+            }
         }
 
         // Transfer category
