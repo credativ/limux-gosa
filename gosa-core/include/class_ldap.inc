@@ -351,9 +351,40 @@ class LDAP
         return(preg_replace("/[^,]*[,]*[ ]*(.*)/", "$1", $basedn));
     }
 
+    // Adds an additional lhmObjectPath filter using the base
+    static function baseToFilter($base, $filter, $recurse) {
+        $pos = strpos($base, "ou=");
+        if ($pos != 0) {
+            $local = substr($base, 0, $pos - 1);
+        } else {
+            $local = "";
+        }
+        $objectPath = substr($base, $pos);
+        // objectPath has literal "\2C" so prevent it from being unescaped to ","
+        $objectPath = str_replace("\001CO", "\\2C", $objectPath);
+        $objectPath = LDAP::prepare4filter($objectPath);
+
+        $local_parts = preg_split("/,/", $local, -1, PREG_SPLIT_NO_EMPTY);
+        if ($recurse) {
+            $recurseChar = "*";
+        } else {
+            $recurseChar = "";
+        }
+        if (empty($filter)) {
+            $filter = "(lhmObjectPath=$recurseChar$objectPath)";
+        } else {
+            $filter = "(&(lhmObjectPath=$recurseChar$objectPath)$filter)";
+        }
+        foreach ($local_parts as $part) {
+            $filter = "(&($part)$filter)";
+        }
+        return $filter;
+    }
 
     function search($srp, $filter, $attrs= array(), $filter_unittag=FALSE, $include_empty_tags=FALSE)
     {
+        global $config;
+
         if($this->hascon){
             if ($this->reconnect) $this->connect();
 
@@ -361,9 +392,16 @@ class LDAP
                 $filter = LDAP::add_unittag_filter($filter, $include_empty_tags);
             }
 
+            if (translate_objectpath_enabled() && str_endswith($this->basedn, $config->current['BASE'])) {
+                $store_base = $config->current['STOREBASE'];
+                $filter = LDAP::baseToFilter($this->basedn, $filter, true);
+            } else {
+                $store_base = $this->basedn;
+            }
+
             $start = microtime(true);
             $this->clearResult($srp);
-            $this->sr[$srp] = @ldap_search($this->cid, LDAP::fix($this->basedn), $filter, $attrs);
+            $this->sr[$srp] = @ldap_search($this->cid, LDAP::fix($store_base), $filter, $attrs);
             $this->error = @ldap_error($this->cid);
             $this->resetResult($srp);
             $this->hasres[$srp]=true;
@@ -376,7 +414,7 @@ class LDAP
                 }
             }
 
-            $this->log("LDAP operation: time=".(microtime(true)-$start)." operation=search('".LDAP::fix($this->basedn)."', '$filter')");
+            $this->log("LDAP operation: time=".(microtime(true)-$start)." operation=search('".LDAP::fix($store_base)."', '$filter')");
 
             // Create statistic table entry 
             stats::log('ldap', $class = get_class($this), $category = array(),  $action = __FUNCTION__, 
@@ -390,6 +428,8 @@ class LDAP
 
     function ls($srp, $filter = "(objectclass=*)", $basedn = "",$attrs = array("*"), $filter_unittag=FALSE, $include_empty_tags=FALSE)
     {
+        global $config;
+
         if($this->hascon){
             if ($this->reconnect) $this->connect();
 
@@ -404,8 +444,15 @@ class LDAP
             else
                 $basedn= LDAP::convert($basedn);
 
+            if (translate_objectpath_enabled() && str_endswith($basedn, $config->current['BASE'])) {
+                $store_base = $config->current['STOREBASE'];
+                $filter = LDAP::baseToFilter($basedn, $filter, false);
+            } else {
+                $store_base = $basedn;
+            }
+
             $start = microtime(true);
-            $this->sr[$srp] = @ldap_list($this->cid, LDAP::fix($basedn), $filter,$attrs);
+            $this->sr[$srp] = @ldap_search($this->cid, $store_base, $filter,$attrs);
             $this->error = @ldap_error($this->cid);
             $this->resetResult($srp);
             $this->hasres[$srp]=true;
@@ -418,7 +465,7 @@ class LDAP
                 }
             }
 
-            $this->log("LDAP operation: time=".(microtime(true) - $start)." operation=ls('".LDAP::fix($basedn)."', '$filter')");
+            $this->log("LDAP operation: time=".(microtime(true) - $start)." operation=ls('".LDAP::fix($store_base)."', '$filter')");
 
             // Create statistic table entry 
             stats::log('ldap', $class = get_class($this), $category = array(),  $action = __FUNCTION__, 
@@ -433,14 +480,25 @@ class LDAP
 
     function cat($srp, $dn,$attrs= array("*"), $filter = "(objectclass=*)")
     {
+        global $config;
+
         if($this->hascon){
             if ($this->reconnect) $this->connect();
 
-            $this->clearResult($srp);
-            $this->sr[$srp] = @ldap_read($this->cid, LDAP::fix($dn), $filter,$attrs);
-            $this->error = @ldap_error($this->cid);
-            $this->resetResult($srp);
-            $this->hasres[$srp]=true;
+            if (translate_objectpath_enabled() && str_endswith($dn, $config->current['BASE'])) {
+                $this->ls($srp, $filter, $dn, $attrs);
+
+                // we needs to return an error if there is no result to mimic ldap_read()
+                if ($this->success() && $this->count($srp) == 0) {
+                    $this->error = "Base not found";
+                }
+            } else {
+                $this->clearResult($srp);
+                $this->sr[$srp] = @ldap_read($this->cid, LDAP::fix($dn), $filter,$attrs);
+                $this->error = @ldap_error($this->cid);
+                $this->resetResult($srp);
+                $this->hasres[$srp]=true;
+            }
             return($this->sr[$srp]);
         }else{
             $this->error = "Could not connect to LDAP server";

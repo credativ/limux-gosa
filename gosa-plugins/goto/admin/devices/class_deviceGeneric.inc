@@ -57,6 +57,8 @@ class deviceGeneric extends plugin
             }
         } else {
             $this->base =preg_replace ("/^[^,]+,".preg_quote(get_ou("deviceGeneric", "deviceRDN"), '/')."/i","",$this->dn);
+
+            $this->correct_orphaned_base();
         }
         $this->orig_base = $this->base;
         $this->orig_dn   = $this->dn;

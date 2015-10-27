@@ -107,6 +107,8 @@ class ogroup extends plugin
             $this->base= dn2base(session::global_is_set("CurrentMainBase")?"cn=dummy,".session::global_get("CurrentMainBase"):$ui->dn);
         } else {
             $this->base= preg_replace("/^[^,]+,".preg_quote(get_ou("group", "ogroupRDN"), '/')."/i","",$this->dn);
+
+            $this->correct_orphaned_base();
         }
 
         /* Detect all workstations, which are already assigned to an object group  

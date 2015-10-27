@@ -119,10 +119,7 @@ class printgeneric extends plugin
                 $this->base= preg_replace("/".preg_quote(get_ou("printgeneric", "printerRDN"), '/')."/i","",dn2base($this->dn));
             }
 
-            if(!isset($this->config->idepartments[$this->base])){
-                msg_dialog::display(_("Internal error"), sprintf(_("Cannot determine a valid department for this object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
-                $this->base  = session::get('CurrentMainBase');
-            }
+            $this->correct_orphaned_base();
         }
 
         /* If no ppd is selected, remove this attribute */

@@ -192,6 +192,8 @@ class group extends plugin
 
             /* Get object base */
             $this->base =preg_replace ("/^[^,]+,".preg_quote(get_groups_ou(), '/')."/i","",$this->dn);
+
+            $this->correct_orphaned_base();
         }
         $this->orig_base = $this->base;
 

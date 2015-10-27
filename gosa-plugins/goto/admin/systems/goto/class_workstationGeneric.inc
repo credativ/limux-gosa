@@ -160,6 +160,8 @@ class workgeneric extends plugin
             $this->base= preg_replace ("/^[^,]+,".preg_quote(get_ou("workgeneric", "workstationRDN"), '/')."/i", "", $this->dn);
         }
 
+        $this->correct_orphaned_base();
+
         /* Create an array of all Syslog servers */
         $tmp = $this->config->data['SERVERS']['SYSLOG'];
         foreach($tmp as $server){

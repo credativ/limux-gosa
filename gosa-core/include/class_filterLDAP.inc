@@ -105,6 +105,17 @@ class filterLDAP {
           $method = "ls";
       }
 
+      // add attributes needed for dn translation unless all attributes are fetched anyway
+      if (translate_objectpath_enabled() && !empty($attributes)) {
+          $additionalAttributes = array("lhmObjectPath", "cn", "uid", "objectClass");
+
+          foreach ($additionalAttributes as $attr) {
+              if (!in_array($attr, $attributes)) {
+                  $attributes[] = $attr;
+              }
+          }
+      }
+
       if ($method == "ls") {
           $ldap->ls("(&$filter$dnFilter)", $base, $attributes, TRUE,
             $include_empty_tags);
@@ -123,6 +134,19 @@ class filterLDAP {
          result array */
       while($attrs = $ldap->fetch()) {
         $dn= $ldap->getDN();
+
+        if (translate_objectpath_enabled()) {
+          // translate from stored dn to logical dn
+          if (strpos($dn, $config->current['STOREBASE']) !== false) {
+            if (in_array("person", $attrs["objectClass"])) {
+              $primaryAttr = "uid";
+            } else {
+              $primaryAttr = "cn";
+            }
+
+            $dn = LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+          }
+        }
 
         /* Convert dn into a printable format */
         if ($flags & GL_CONVERT){
