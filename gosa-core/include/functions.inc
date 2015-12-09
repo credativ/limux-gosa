@@ -55,6 +55,7 @@ define("GL_CONVERT",      4);
 define("GL_NO_ACL_CHECK", 8);
 define("GL_FILTER_UNITTAG", 16);
 define("GL_FILTER_INCLUDE_EMPTY_TAG", 32);
+define("GL_NO_OBJECTPATH_TRANSLATE", 64);
 
 /* Heimdal stuff */
 define('UNIVERSAL',0x00);
@@ -4013,6 +4014,17 @@ function translate_objectpath_enabled()
     return isset($config->current['STOREBASE'])
         && !empty($config->current['STOREBASE'])
         && isset($config->current['USERSTORERDN']);
+}
+
+function store_base()
+{
+    global $config;
+
+    if (translate_objectpath_enabled()) {
+        return $config->current['STOREBASE'];
+    } else {
+        return $config->current['BASE'];
+    }
 }
 
 /*! \brief    Returns true iff the string haystack ends with needle, else false.

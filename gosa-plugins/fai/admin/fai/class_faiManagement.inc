@@ -61,7 +61,7 @@ class faiManagement extends management
       $this->opsi = new opsi($this->config);;
     }
 
-    $this->fai_base = get_ou("faiManagement", "faiBaseRDN").$this->config->current['BASE'];
+    $this->fai_base = get_ou("faiManagement", "faiBaseRDN").store_base();
     $cfg_rel = $this->config->get_cfg_value("faiManagement","defaultFaiRelease");
 
     if(!empty($cfg_rel)){

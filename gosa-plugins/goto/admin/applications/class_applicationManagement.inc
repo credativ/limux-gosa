@@ -42,8 +42,8 @@ class applicationManagement extends management
   {
     $this->config = $config;
     $this->ui = $ui;
-    $this->app_base    = get_ou("application", "applicationRDN").$this->config->current['BASE'];
-    $this->app_release = get_ou("application", "applicationRDN").$this->config->current['BASE'];
+    $this->app_base    = get_ou("application", "applicationRDN").store_base();
+    $this->app_release = get_ou("application", "applicationRDN").store_base();
 
     if($this->IsReleaseManagementActivated()){
       $filter_xml = "application-filter-release.xml";
