@@ -1117,7 +1117,8 @@ class faiManagement extends management
     $ldap->ls("(objectClass=FAIbranch)",$base,array("ou","FAIstate"));
     while($release = $ldap->fetch()){
       $list[$release['dn']] = $prefix.$release['ou'][0];
-      $list = array_merge($list,$this->getReleaseList($release['dn'],$prefix."&nbsp; "));
+      if ($base != $release['dn'])
+        $list = array_merge($list,$this->getReleaseList($release['dn'],$prefix."&nbsp; "));
     }
     return($list);
   }
@@ -1144,7 +1145,8 @@ class faiManagement extends management
       if(isset($release['FAIstate'][0]) && preg_match("/freeze/i",$release['FAIstate'][0])){
         $list[$release['dn']] = _("Freeze");
       }
-      $list = array_merge($list,faiManagement::getReleaseStates($config,$release['dn'], $fai_base));
+      if ($base != $release['dn'])
+        $list = array_merge($list,faiManagement::getReleaseStates($config,$release['dn'], $fai_base));
     }
     return($list);
   }
