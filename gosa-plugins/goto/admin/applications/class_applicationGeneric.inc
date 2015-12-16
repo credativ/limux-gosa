@@ -71,17 +71,17 @@ class application extends plugin
         $this->base = session::get('CurrentMainBase');
       }else{
         $ui= get_userinfo();
-        if (translate_objectpath_enabled()) {
-          /* Applications don't have an object path attribute but we need a base inside BASE.
-             We just pretend that the base is BASE since ACLs aren't applicable to subdepartments anyway. */
-          $this->base= $config->current['BASE'];
-        } else {
-          $this->base= dn2base($ui->dn);
-        }
+        $this->base= dn2base($ui->dn);
       }
     } else {
       preg_match ("/".preg_quote(get_ou("application", "applicationRDN"), '/')."(.+$)/", $this->dn, $match);
       $this->base= $match[1];
+    }
+
+    if (translate_objectpath_enabled()) {
+        /* Applications don't have an object path attribute but we need a base inside BASE.
+         * We just pretend that the base is BASE since ACLs aren't applicable to subdepartments anyway. */
+        $this->base= $config->current['BASE'];
     }
 
     $this->orig_cn = $this->cn;
