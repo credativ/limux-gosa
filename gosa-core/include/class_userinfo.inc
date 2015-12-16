@@ -96,7 +96,6 @@ class userinfo
     $this->result_cache =array();
     $this->reset_acl_cache();
     $ldap= $this->config->get_ldap_link();
-    $ldap->cd($this->config->current['BASE']);
 
     /* Get member groups... */
     $ldap->search("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", array('dn'));
@@ -105,7 +104,12 @@ class userinfo
     }
 
     /* Crawl through ACLs and move relevant to the tree */
-    $ldap->search("(objectClass=gosaACL)", array('dn', 'gosaAclEntry'));
+    if (translate_objectpath_enabled()) {
+      $ldap->cat($this->config->current['STOREBASE'], array('dn', 'gosaAclEntry'));
+    } else {
+      $ldap->cd($this->config->current['BASE']);
+      $ldap->search("(objectClass=gosaACL)", array('dn', 'gosaAclEntry'));
+    }
     $aclp= array();
     $aclc= array();
     while ($attrs= $ldap->fetch()){
@@ -118,6 +122,12 @@ class userinfo
         $ol= array_merge($ol, @acl::explodeAcl($attrs['gosaAclEntry'][$i]));
       }
       $aclc[$attrs['dn']]= $ol;
+
+      if (translate_objectpath_enabled()) {
+        // Apply ACL to both STOREBASE and BASE
+        $aclp[$this->config->current['BASE']]= substr_count($this->config->current['BASE'], ',');
+        $aclc[$this->config->current['BASE']]= $aclc[$attrs['dn']];
+      }
     }
 
     /* Resolve roles here. 

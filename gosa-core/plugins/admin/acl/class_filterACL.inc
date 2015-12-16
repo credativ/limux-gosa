@@ -47,6 +47,12 @@ class filterACL {
     // Initialize search bases
     $bases= array();
     
+    if (translate_objectpath_enabled()) {
+      /* The department object has no object path attribute
+         so we need to inject it manually. */
+      $bases[$config->current['STOREBASE']] = "";
+    }
+
     // Get list of sub bases to search on
     if (count($objectStorage) == 0) {
       $bases[$base]= "";
@@ -97,6 +103,18 @@ class filterACL {
       } else {
         $dnFilter= "";
       }
+
+      // add attributes needed for dn translation unless all attributes are fetched anyway
+      if (translate_objectpath_enabled() && !empty($attributes)) {
+          $additionalAttributes = array("lhmObjectPath", "cn");
+
+          foreach ($additionalAttributes as $attr) {
+              if (!in_array($attr, $attributes)) {
+                  $attributes[] = $attr;
+              }
+          }
+      }
+
       $ldap->cd($base);
       if ($method == "ls") {
         $ldap->ls("(&$filter$dnFilter)", $base, $attributes);
@@ -116,6 +134,13 @@ class filterACL {
          result array */
       while($attrs = $ldap->fetch()) {
         $dn= $ldap->getDN();
+
+        if (translate_objectpath_enabled() && isset($attrs["lhmObjectPath"][0]) && isset($attrs["cn"][0])) {
+          // translate from stored dn to logical dn
+          if (strpos($dn, $config->current['STOREBASE']) !== false) {
+            $dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+          }
+        }
 
         /* Convert dn into a printable format */
         if ($flags & GL_CONVERT){

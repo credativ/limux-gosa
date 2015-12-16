@@ -621,6 +621,9 @@ function ldap_login_user ($username, $password)
   }
   $tmp= $verify_attr;
   $tmp[] = "uid";
+  if (translate_objectpath_enabled()) {
+    $tmp[] = "lhmObjectPath";
+  }
   $filter = "";
   foreach($verify_attr as $attr) {
     $filter.= "(".$attr."=".$username.")";
@@ -656,8 +659,16 @@ function ldap_login_user ($username, $password)
     return(FALSE);
   }
 
+  $real_dn = $ldap->getDN();
+  if (translate_objectpath_enabled() && (strpos($real_dn, $config->current['STOREBASE']) !== false)) {
+    // translate from stored dn to logical dn
+    $dn = LDAP::convert("uid=".$attrs['uid'][0].",".$attrs["lhmObjectPath"][0]);
+  } else {
+    $dn = $real_dn;
+  }
+
   /* got user dn, fill acl's */
-  $ui= new userinfo($config, $ldap->getDN());
+  $ui= new userinfo($config, $dn);
   $ui->username= $attrs['uid'][0];
 
   /* Bail out if we have login restrictions set, for security reasons
@@ -669,7 +680,7 @@ function ldap_login_user ($username, $password)
 
   /* password check, bind as user with supplied password  */
   $ldap->disconnect();
-  $ldap= new LDAP($ui->dn, $password, $config->current['SERVER'],
+  $ldap= new LDAP($real_dn, $password, $config->current['SERVER'],
       isset($config->current['LDAPFOLLOWREFERRALS']) &&
       $config->current['LDAPFOLLOWREFERRALS'] == "true",
       isset($config->current['LDAPTLS'])
