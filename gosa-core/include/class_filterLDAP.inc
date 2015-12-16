@@ -106,7 +106,7 @@ class filterLDAP {
       }
 
       // add attributes needed for dn translation unless all attributes are fetched anyway
-      if (translate_objectpath_enabled() && !empty($attributes)) {
+      if (translate_objectpath_enabled() && !($flags & GL_NO_OBJECTPATH_TRANSLATE) && !empty($attributes)) {
           $additionalAttributes = array("lhmObjectPath", "cn", "uid", "objectClass");
 
           foreach ($additionalAttributes as $attr) {
@@ -135,7 +135,7 @@ class filterLDAP {
       while($attrs = $ldap->fetch()) {
         $dn= $ldap->getDN();
 
-        if (translate_objectpath_enabled()) {
+        if (translate_objectpath_enabled() && !($flags & GL_NO_OBJECTPATH_TRANSLATE)) {
           // translate from stored dn to logical dn
           if (strpos($dn, $config->current['STOREBASE']) !== false) {
             if (in_array("person", $attrs["objectClass"])) {

@@ -444,7 +444,9 @@ class LDAP
             else
                 $basedn= LDAP::convert($basedn);
 
-            if (translate_objectpath_enabled() && str_endswith($basedn, $config->current['BASE'])) {
+            $rewriteBase = (translate_objectpath_enabled() && str_endswith($basedn, $config->current['BASE']));
+
+            if ($rewriteBase) {
                 $store_base = $config->current['STOREBASE'];
                 $filter = LDAP::baseToFilter($basedn, $filter, false);
             } else {
@@ -452,7 +454,11 @@ class LDAP
             }
 
             $start = microtime(true);
-            $this->sr[$srp] = @ldap_search($this->cid, $store_base, $filter,$attrs);
+            if ($rewriteBase) {
+              $this->sr[$srp] = @ldap_search($this->cid, $store_base, $filter,$attrs);
+            } else {
+              $this->sr[$srp] = @ldap_list($this->cid, $store_base, $filter,$attrs);
+            }
             $this->error = @ldap_error($this->cid);
             $this->resetResult($srp);
             $this->hasres[$srp]=true;

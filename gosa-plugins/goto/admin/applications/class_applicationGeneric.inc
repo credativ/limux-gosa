@@ -78,6 +78,12 @@ class application extends plugin
       $this->base= $match[1];
     }
 
+    if (translate_objectpath_enabled()) {
+        /* Applications don't have an object path attribute but we need a base inside BASE.
+         * We just pretend that the base is BASE since ACLs aren't applicable to subdepartments anyway. */
+        $this->base= $config->current['BASE'];
+    }
+
     $this->orig_cn = $this->cn;
     $this->orig_base = $this->base;
     $this->gosaApplicationFlags = preg_replace("/[^GDLMO]/","",$this->gosaApplicationFlags);

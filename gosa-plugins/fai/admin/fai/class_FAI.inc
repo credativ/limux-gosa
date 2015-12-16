@@ -31,7 +31,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $res = array();
     $tmp = array();
 
@@ -213,7 +213,7 @@ class FAI
 
     if(!$removed){
       $ldap = $config->get_ldap_link();
-      $ldap->cd($config->current['BASE']);
+      $ldap->cd(store_base());
       $parent_dn = FAI::get_parent_object($Current_DN);
 
       /* Get some basic informations */
@@ -233,7 +233,7 @@ class FAI
           we have to remove this name from all profiles in this release.
       */
       $ldap = $config->get_ldap_link();
-      $ldap->cd($config->current['BASE']);
+      $ldap->cd(store_base());
       $obj_dn = FAI::get_parent_release_object($Current_DN,TRUE);
 
       /* Dont't try to modify non FAIclasses  
@@ -395,7 +395,7 @@ class FAI
 
       /* Get ldap object */ 
       $ldap = $config->get_ldap_link();
-      $ldap->cd($config->current['BASE']);
+      $ldap->cd(store_base());
 
       /* Get some basic informations */
       $base_release       = FAI::get_release_dn($Current_DN);
@@ -605,7 +605,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
 
     /* Collect some basic informations and initialize some variables */ 
     $base_release       = FAI::get_release_dn($Current_DN);
@@ -685,7 +685,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $ldap->create_missing_trees(preg_replace('/^[^,]+,/', '', $dn));
     $ldap->cd($dn);
 
@@ -743,7 +743,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
 
     $ret = array();
 
@@ -779,7 +779,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $previous_releases= array();
 
     /* Get base release */
@@ -816,11 +816,11 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $ret = array();
 
     /* Explode dns into pieces, to be able to build parent dns */
-    $dns_to_check = gosa_ldap_explode_dn(preg_replace("/".preg_quote(",".$config->current['BASE'], '/')."/i","",$dn));
+    $dns_to_check = gosa_ldap_explode_dn(preg_replace("/".preg_quote(",".store_base(), '/')."/i","",$dn));
 
     if(!is_array($dns_to_check)){
       return;  
@@ -839,7 +839,7 @@ class FAI
       foreach($dns_to_check as $part){
         $new_dn .= $part.",";
       }
-      $new_dn .= $config->current['BASE'];
+      $new_dn .= store_base();
 
       /* check if this dn is a release */
       if(FAI::is_release_department($new_dn)){
@@ -865,7 +865,7 @@ class FAI
     global $config;
     $res  = array();
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $ldap->ls("(objectClass=FAIbranch)",$dn,array("objectClass","dn","ou"));
     while($attr = $ldap->fetch()){
 
@@ -897,7 +897,7 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $ldap->cat($dn,array("objectClass","ou"));
 
     /* Check objectClasses and name to check if this is a release department */
@@ -939,7 +939,7 @@ class FAI
 
     /* Get all groups */
     $ldap =$config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
     $ldap->search("(objectClass=posixGroup)",array("dn"));
     $groups = array();
     while($attrs = $ldap->fetch()){
@@ -950,7 +950,7 @@ class FAI
         with the correct type of release (FAIstate=freeze/branch).
      */
     $f_releases = array();
-    $ldap->cd ($config->current['BASE']);
+    $ldap->cd (store_base());
     $ldap->search("(objectClass=FAIbranch)",array("ou","FAIstate"));
     while($attrs = $ldap->fetch()){
       foreach($sub_releases as $sub_rel){
@@ -1080,7 +1080,7 @@ class FAI
     global $config;
     error_reporting(E_ALL | E_STRICT);
     $ldap     = $config->get_ldap_link();
-    $basedn   = $config->current['BASE'];
+    $basedn   = store_base();
     $delarray = array();
 
     /* The following code will output a status string
@@ -1249,10 +1249,10 @@ class FAI
   {
     global $config;
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
 
     /* Split dn into pices */ 
-    $dns_to_check = gosa_ldap_explode_dn(preg_replace("/".preg_quote(",".$config->current['BASE'], '/')."/i","",$Current_DN));
+    $dns_to_check = gosa_ldap_explode_dn(preg_replace("/".preg_quote(",".store_base(), '/')."/i","",$Current_DN));
 
     if(!is_array($dns_to_check)){
       return;  
@@ -1272,7 +1272,7 @@ class FAI
       foreach($dns_to_check as $part){
         $new_dn .= $part.",";
       }
-      $new_dn .= $config->current['BASE'];
+      $new_dn .= store_base();
 
       /* Check if this dn is a release dn */
       if(FAI::is_release_department($new_dn)){
@@ -1324,7 +1324,7 @@ class FAI
     $parent_dn = preg_replace('/^cn=[^,.]*,/', '', $Current_DN);
     if (preg_match('/^cn=/', $parent_dn)) {
       $ldap = $config->get_ldap_link();
-      $ldap->cd($config->current['BASE']);
+      $ldap->cd(store_base());
       $ldap->cat($parent_dn);
       if($ldap->count()){
         return false;
@@ -1384,7 +1384,7 @@ class FAI
     if ($parent_dn != $Current_DN){
       if($check){
         $ldap = $config->get_ldap_link();
-        $ldap->cd($config->current['BASE']);
+        $ldap->cd(store_base());
         $ldap->cat($parent_dn);
         if(!$ldap->count()){
           return "";
@@ -1403,7 +1403,7 @@ class FAI
     $ldap = $config->get_ldap_link();
     $parent_dn = FAI::get_parent_object($Current_DN);
     if ($parent_dn) { 
-      $ldap->cd($config->current['BASE']);
+      $ldap->cd(store_base());
       $ldap->cat($parent_dn);
       $parentObjectAttrs = FAI::prepare_ldap_fetch_to_be_saved($ldap->fetch());
       if(isset($parentObjectAttrs['FAIstate'][0])){
@@ -1433,7 +1433,7 @@ class FAI
            the main release exists */
         $main_parent_dn = FAI::get_parent_release_object($cow_parent_dn);
         $ldap = $config->get_ldap_link();
-        $ldap->cd($config->current['BASE']);
+        $ldap->cd(store_base());
         $ldap->cat($main_parent_dn);
         if($ldap->count()){
           return true;
