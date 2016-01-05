@@ -1122,7 +1122,11 @@ function filterDepartmentLink($row, $dn, $description)
     if (is_array($name)){
         $name= $name[0];
     }
-    $result= sprintf("%s [%s]", $name, $description[0]);
+    if ($description[0] == ""){
+        $result= $name;
+    }else{
+        $result= sprintf("%s [%s]", $name, $description[0]);
+    }
     return("<a href='?plug=".$_GET['plug']."&amp;PID=$this->pid&amp;act=department_$row' title='$dn'>".set_post($result)."</a>");
 }
 

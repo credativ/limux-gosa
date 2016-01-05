@@ -834,7 +834,7 @@ class config  {
             }
 
             $this->department_info[$lhm_object_path] = array("img" => "images/lists/folder.png",
-                    "description" => $department_name,
+                    "description" => "",
                     "name" => $department_name);
             // TODO: we don't have a gosa unit tag for departments
             $this->tdepartments[$lhm_object_path]= "";
