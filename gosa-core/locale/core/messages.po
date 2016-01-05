@@ -6467,6 +6467,10 @@ msgstr ""
 msgid "Cannot paste"
 msgstr ""
 
+#: include/class_filter.inc:94
+msgid "Orphaned objects"
+msgstr ""
+
 #: include/class_filter.inc:240
 msgid "Search filter"
 msgstr ""

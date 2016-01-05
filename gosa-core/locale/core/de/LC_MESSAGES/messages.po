@@ -6977,6 +6977,10 @@ msgstr "Dieses Objekt wird eingefügt: %s"
 msgid "Cannot paste"
 msgstr "Kann nicht einfügen"
 
+#: include/class_filter.inc:94
+msgid "Orphaned objects"
+msgstr "Verwaiste Objekte"
+
 #: include/class_filter.inc:240
 msgid "Search filter"
 msgstr "Suchfilter"

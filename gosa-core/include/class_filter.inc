@@ -91,7 +91,7 @@ class filter {
             }
 
             $this->xmlSearches['orphaned_objects']['tag'] = "orphaned_objects";
-            $this->xmlSearches['orphaned_objects']['label'] = "Orphaned objects";
+            $this->xmlSearches['orphaned_objects']['label'] = _("Orphaned objects");
             $query = array();
             $query['backend'] = "VirtualOrphanedObjects";
             $query['filter'] = "";
