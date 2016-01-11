@@ -836,14 +836,31 @@ class LDAP
         }
     }
 
-    function add($attrs)
+    function add($attrs, $storeRdn = "")
     {
+        global $config;
+
         $this->remove_empty_attributes($attrs);
         
         if($this->hascon){
             $start = microtime(TRUE);
             if ($this->reconnect) $this->connect();
-            $r = @ldap_add($this->cid, LDAP::fix($this->basedn), $attrs);
+
+            if (translate_objectpath_enabled() && str_endswith($this->basedn, $config->current['BASE'])) {
+                if (in_array("person", $attrs["objectClass"])) {
+                    $primaryAttr = "uid";
+                } else {
+                    $primaryAttr = "cn";
+                }
+
+                $base = $primaryAttr."=".$attrs[$primaryAttr] . "," . $storeRdn . $config->current['STOREBASE'];
+
+                $attrs['lhmObjectPath'] = $this->getParentDir($this->basedn);
+            } else{
+                $base = $this->basedn;
+            }
+
+            $r = @ldap_add($this->cid, LDAP::fix($base), $attrs);
             $this->error = @ldap_error($this->cid);
             if(!$this->success()){
                 $this->error.= $this->makeReadableErrors($this->error,$attrs);

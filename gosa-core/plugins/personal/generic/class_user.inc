@@ -1100,7 +1100,11 @@ class user extends plugin
     }
 
     $ldap->cd ($this->dn);
-    $ldap->$mode ($this->attrs);
+    if ($mode == "add") {
+        $ldap->add ($this->attrs, get_ou("core", "userStoreRDN"));
+    } else {
+        $ldap->$mode ($this->attrs);
+    }
     if (!$ldap->success()){
       msg_dialog::display(_("LDAP error"), msgPool::ldaperror($ldap->get_error(), $this->dn, LDAP_DEL, get_class()));
       return (1);

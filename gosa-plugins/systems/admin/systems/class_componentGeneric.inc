@@ -265,7 +265,7 @@ class componentGeneric extends plugin
             $ldap->cd($this->config->current['BASE']);
             $ldap->create_missing_trees(preg_replace('/^[^,]+,/', '', $this->dn));
             $ldap->cd($this->dn);
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("componentgeneric", "componentStoreRDN"));
             new log("create","component/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
             $this->handle_post_events("add",array("macAddress" => $this->netConfigDNS->macAddress,"ipHostNumber" => $this->netConfigDNS->ipHostNumber));
 
@@ -306,6 +306,16 @@ class componentGeneric extends plugin
                             "description"   => _("RDN for component storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_componentRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+
+                        array(
+                            "name"          => "componentStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=netdevices,ou=systems,",
+                            "description"   => _("RDN for component storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             )

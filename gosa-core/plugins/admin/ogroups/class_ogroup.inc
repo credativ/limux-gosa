@@ -830,7 +830,11 @@ class ogroup extends plugin
         /* Write back to ldap */
         $ldap->cd($this->dn);
         $this->cleanup();
-        $ldap->$mode($this->attrs);
+        if ($mode == "add") {
+            $ldap->add($this->attrs, get_ou("group", "ogroupStoreRDN"));
+        } else {
+            $ldap->$mode($this->attrs);
+        }
 
         if($mode == "add"){
             new log("create","ogroups/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());

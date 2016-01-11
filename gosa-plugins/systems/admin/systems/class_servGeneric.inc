@@ -440,7 +440,7 @@ class servgeneric extends plugin
             $ldap->cd($this->config->current['BASE']);
             $ldap->create_missing_trees(preg_replace('/^[^,]+,/', '', $this->dn));
             $ldap->cd($this->dn);
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("servgeneric", "serverStoreRDN"));
             new log("create","server/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
             $mode= "add";
         } else {
@@ -551,6 +551,16 @@ class servgeneric extends plugin
                             "description"   => _("RDN for server storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_serverRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+
+                        array(
+                            "name"          => "serverStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=servers,ou=systems,",
+                            "description"   => _("RDN for server storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             )

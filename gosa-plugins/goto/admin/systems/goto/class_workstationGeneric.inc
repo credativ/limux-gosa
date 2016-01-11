@@ -634,7 +634,7 @@ class workgeneric extends plugin
             $ldap->cd($this->config->current['BASE']);
             $ldap->create_missing_trees(preg_replace('/^[^,]+,/', '', $this->dn));
             $ldap->cd($this->dn);
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("workgeneric", "workstationStoreRDN"));
             new log("create","workstation/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
             if (!$ldap->success()){
                 msg_dialog::display(_("LDAP error"), msgPool::ldaperror($ldap->get_error(), $this->dn, 0, get_class()));
@@ -780,6 +780,15 @@ class workgeneric extends plugin
                             "description"   => _("RDN for workstation storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_workstationRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+                        array(
+                            "name"          => "workstationStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=workstations,ou=systems,",
+                            "description"   => _("RDN for workstation storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             ),

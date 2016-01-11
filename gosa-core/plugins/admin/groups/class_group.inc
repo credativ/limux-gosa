@@ -882,7 +882,11 @@ class group extends plugin
         /* Write back to ldap */
         $ldap->cd($this->dn);
         $this->cleanup();
-        $ldap->$mode($this->attrs);
+        if ($mode == "add") {
+            $ldap->add($this->attrs, get_ou("core", "groupStoreRDN"));
+        } else {
+            $ldap->$mode($this->attrs);
+        }
 
         /* Remove ACL dependencies too,
          */
@@ -1124,6 +1128,15 @@ class group extends plugin
                             "description"   => _("RDN for object group storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_ogroupRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE),
+
+                        array(
+                            "name"          => "ogroupStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=groups,",
+                            "description"   => _("RDN for object group storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE)),
 
