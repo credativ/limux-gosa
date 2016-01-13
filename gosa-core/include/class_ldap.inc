@@ -381,6 +381,25 @@ class LDAP
         return $filter;
     }
 
+    function logicalToStoreDn($logical_dn)
+    {
+        global $config;
+
+        if (translate_objectpath_enabled() && str_endswith($logical_dn, $config->current['BASE'])) {
+            // ideally we'd get an srp passed as a parameter
+            $srp = $this->getSearchResource();
+            $this->cat($srp, $logical_dn, array("dn"));
+            if(!$this->success()){
+                return "";
+            }
+            $attrs = $this->fetch($srp);
+
+            return $attrs['dn'];
+        } else {
+            return $logical_dn;
+        }
+    }
+
     function search($srp, $filter, $attrs= array(), $filter_unittag=FALSE, $include_empty_tags=FALSE)
     {
         global $config;
