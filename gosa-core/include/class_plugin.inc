@@ -990,7 +990,15 @@ class plugin
     return(TRUE); 
   }
 
+  function update_objectpath($dn, $objectPath)
+  {
+     $ldap= $this->config->get_ldap_link();
 
+     $attrs = array("lhmObjectPath" => $objectPath);
+
+     $ldap->cd($dn);
+     $r = $ldap->modify($attrs);
+  }
  
   function move($src_dn, $dst_dn)
   {
@@ -1003,27 +1011,61 @@ class plugin
     stats::log('plugin', $class = get_class($this), $category = array($this->acl_category),  $action = 'move', 
             $amount = 1, $duration = (microtime(TRUE) - $this->initTime));
 
+    $ldap= $this->config->get_ldap_link();
+
+    if (translate_objectpath_enabled() && str_endswith($src_dn, $this->config->current['BASE'])) {
+        /* dest_dn            = rdn(dest_logical_dn) . "," . parent(source_dn)
+           dest_lhmObjectPath = parent(dest_logical)
+        */
+
+        $source_dn_logical = $src_dn;
+        $dest_dn_logical = $dst_dn;
+
+        $dest_parent_logical = preg_replace("/^[^,]+,/","", $dest_dn_logical);
+        $source_logical_rdn = preg_replace("/,.*$/","",$source_dn_logical);
+        $dest_logical_rdn = preg_replace("/,.*$/","",$dest_dn_logical);
+
+        $src_dn = $ldap->logicalToStoreDn($source_dn_logical);
+        $source_parent  = preg_replace("/^[^,]+,/","", $src_dn);
+        $dst_dn = $dest_logical_rdn . "," . $source_parent;
+
+        $perform_ldap_rename = ($source_logical_rdn != $dest_logical_rdn);
+        $perform_objectpath_update = true;
+    } else {
+        $perform_ldap_rename = true;
+        $perform_objectpath_update = false;
+    }
+
     /* Try to move the entry instead of copy & delete
      */
-    if(TRUE){
+    if($perform_ldap_rename){
 
       /* Try to move with ldap routines, if this was not successfull
           fall back to the old style copy & remove method 
        */
       if($this->rename($src_dn, $dst_dn)){
-        return(TRUE);
+        if ($perform_objectpath_update){
+          return $this->update_objectpath($dst_dn, $dest_parent_logical);
+        } else{
+          return(TRUE);
+        }
       }else{
         // See code below.
       }
+
+      /* Copy source to destination */
+      if (!$this->copy($src_dn, $dst_dn)){
+        return (FALSE);
+      }
     }
 
-    /* Copy source to destination */
-    if (!$this->copy($src_dn, $dst_dn)){
-      return (FALSE);
+    if ($perform_objectpath_update){
+        if (!$this->update_objectpath($dst_dn, $dest_parent_logical)){
+          return (FALSE);
+        }
     }
 
     /* Delete source */
-    $ldap= $this->config->get_ldap_link();
     $ldap->rmdir_recursive($src_dn);
     if (!$ldap->success()){
       trigger_error("Trying to delete $src_dn failed.",
