@@ -855,25 +855,11 @@ class LDAP
 
                 $base = $primaryAttr."=".$attrs[$primaryAttr] . "," . $storeRdn . $config->current['STOREBASE'];
 
-                $srp = $this->getSearchResource();
-                $this->cat($srp, $config->current['STOREBASE'], array("lhmObjectReference", "gosaUnitTag"));
-                if(!$this->success()){
-                    return("");
-                }
-                $parentAttrs = $this->fetch($srp);
-
                 if (!in_array("lhmObject", $attrs['objectClass'])) {
                     $attrs['objectClass'][] = "lhmObject";
                 }
 
-                if (!in_array("gosaAdministrativeUnitTag", $attrs['objectClass'])) {
-                    $attrs['objectClass'][] = "gosaAdministrativeUnitTag";
-                }
-
                 $attrs['lhmObjectPath'] = $this->getParentDir($this->basedn);
-                $attrs['lhmObjectReference'] = $parentAttrs['lhmObjectReference'][0];
-
-                $attrs['gosaUnitTag'] = $parentAttrs['gosaUnitTag'][0];
             } else{
                 $base = $this->basedn;
             }
