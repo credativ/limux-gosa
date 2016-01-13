@@ -683,12 +683,22 @@ class ogroup extends plugin
 
         $ldap = $this->config->get_ldap_link();
         $ldap->cd($this->config->current['BASE']);
-        $ldap->search('(&(objectClass=gosaGroupOfNames)(cn=' . LDAP::prepare4filter($this->cn) . '))', array('dn'), TRUE);
+        $queryAttrs = array('dn');
+        if (translate_objectpath_enabled()) {
+          $queryAttrs[] = 'cn';
+          $queryAttrs[] = 'lhmObjectPath';
+        }
+        $ldap->search('(&(objectClass=gosaGroupOfNames)(cn=' . LDAP::prepare4filter($this->cn) . '))', $queryAttrs, TRUE);
         
         
         if($ldap->count() !=0) {
-          $ldap->fetch();
-          if (mb_strtolower($ldap->getDN()) != mb_strtolower($this->orig_dn)) {
+          $attrs = $ldap->fetch();
+          if (translate_objectpath_enabled()) {
+            $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+          } else {
+            $found_dn = $ldap->getDN();
+          }
+          if (mb_strtolower($found_dn) != mb_strtolower($this->orig_dn)) {
             $message[]= msgPool::duplicated(_("Name"));
           }
         } 
