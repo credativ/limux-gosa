@@ -1076,6 +1076,10 @@ class LDAP
     // \param string dn The DN of the object whose parent DNs shall be removed
     // \param array included_rdns
     static function rm_obsolete_trees($dn, $included_rdns=array()) {
+      if (translate_objectpath_enabled()) {
+        // flat hierachy -> impossible to remove tree
+        return;
+      }
 
       global $config;
       $ldap = $config->get_ldap_link();
