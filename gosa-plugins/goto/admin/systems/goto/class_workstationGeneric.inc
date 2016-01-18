@@ -498,10 +498,19 @@ class workgeneric extends plugin
             if($this->cn == "wdefault"){
                 $ldap->cat($this->dn);
             }else{
-                $ldap->search ("(&(cn=".$this->cn.")(objectClass=gotoWorkstation))", array("cn", "gosaUnitTag"));
+                $queryAttrs = array("cn", "gosaUnitTag");
+                if (translate_objectpath_enabled()) {
+                    $queryAttrs[] = "lhmObjectPath";
+                }
+                $ldap->search ("(&(cn=".$this->cn.")(objectClass=gotoWorkstation))", $queryAttrs);
             }
             if ($ldap->count() != 0){
                 while ($attrs= $ldap->fetch()){
+                    if (translate_objectpath_enabled()) {
+                        $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+                    } else {
+                        $found_dn = $attrs['dn'];
+                    }
 
                     $matchArp = FALSE;
                     if(class_available("ArpNewDevice") &&
@@ -509,10 +518,10 @@ class workgeneric extends plugin
                         $matchArp = TRUE;
                     } 
 
-                    if (preg_match("/cn=dhcp,/",$attrs['dn']) || $matchArp){
+                    if (preg_match("/cn=dhcp,/",$found_dn) || $matchArp){
                         continue;
                     } else {
-                        if ($attrs['dn'] != $this->orig_dn) {
+                        if ($found_dn != $this->orig_dn) {
                           if (isset($this->config->current['HONOURUNITTAGS']) &&
                               preg_match('/true/i', $this->config->current['HONOURUNITTAGS']) &&
                               $attrs['gosaUnitTag'][0] != $this->get_gosaUnitTag()) {

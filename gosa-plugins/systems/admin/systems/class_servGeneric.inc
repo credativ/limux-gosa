@@ -357,10 +357,20 @@ class servgeneric extends plugin
             $ldap= $this->config->get_ldap_link();
             # Do not allow objects with the same name in other departments, either
             $ldap->cd ($this->config->current['BASE']);
-            $ldap->search ("(cn=".$this->cn.")", array("cn", "gosaUnitTag"));
+            $queryAttrs = array("cn", "gosaUnitTag");
+            if (translate_objectpath_enabled()) {
+                $queryAttrs[] = "lhmObjectPath";
+            }
+            $ldap->search ("(cn=".$this->cn.")", $queryAttrs);
             if ($ldap->count() != 0){
                 while ($attrs= $ldap->fetch()){
-                    if ($attrs['dn'] != $this->orig_dn){
+                    if (translate_objectpath_enabled()) {
+                        $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+                    } else {
+                        $found_dn = $attrs['dn'];
+                    }
+
+                    if ($found_dn != $this->orig_dn){
 
                         $matchesArp = FALSE;
                         if(class_available("ArpNewDevice")){
