@@ -77,6 +77,10 @@ class printgeneric extends plugin
             return;
         }
 
+        if (translate_objectpath_enabled()) {
+            $this->objectclasses[] = "lhmObject";
+        }
+
         /* Update dn, to ensure storing as printer instead of WS / terminal */
         if(preg_match("/Terminal/i",$this->BelongsTo) || preg_match("/TerminalTemplate/i",$this->BelongsTo)){
             $this->dn= preg_replace("/".preg_quote(get_ou("termgeneric", "terminalRDN"), '/')."/i",get_ou("printgeneric", "printerRDN"),$this->dn);
