@@ -1080,6 +1080,11 @@ class plugin
   /* \brief Move/Rename complete trees */
   function recursive_move($src_dn, $dst_dn)
   {
+    if (translate_objectpath_enabled() && str_endswith($src_dn, $this->config->current['BASE'])) {
+      // for now recursive move is not supported, instead do a regular move.
+      return $this->move($src_dn, $dst_dn);
+    }
+
     /* Check if the destination entry exists */
     $ldap= $this->config->get_ldap_link();
 
