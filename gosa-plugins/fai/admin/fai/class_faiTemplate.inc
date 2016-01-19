@@ -169,7 +169,7 @@ class faiTemplate extends plugin
         if(!isset($obj['cn'])){
           trigger_error("Something wen't wrong here!");
         }else{
-          send_binary_content($obj['FAItemplateFile'],$obj['cn'].".FAItemplate");
+          send_binary_content($obj['FAItemplateFile'],$obj['cn'].".FAItemplate","text/plain");
         }
       } 
     }

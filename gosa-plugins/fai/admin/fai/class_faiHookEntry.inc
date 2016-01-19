@@ -121,7 +121,7 @@ class faiHookEntry extends plugin
 
     /* File download requested */
     if(isset($_POST['download'])){
-      send_binary_content($this->FAIscript,$this->cn.".FAIhook");
+      send_binary_content($this->FAIscript,$this->cn.".FAIhook","text/plain");
     }
 
     /* Create download button*/

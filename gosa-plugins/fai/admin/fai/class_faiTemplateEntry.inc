@@ -84,7 +84,7 @@ class faiTemplateEntry extends plugin
    
     /* File download requested */
     if(isset($_POST['getFAItemplate'])){
-      send_binary_content($this->FAItemplateFile,$this->cn.".FAItemplate");
+      send_binary_content($this->FAItemplateFile,$this->cn.".FAItemplate","text/plain");
     }
 
     /* Display opened dialog */

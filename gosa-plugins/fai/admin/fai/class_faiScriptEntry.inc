@@ -97,7 +97,7 @@ class faiScriptEntry extends plugin
 
         /* File download requested */
         if(isset($_POST['download'])){
-            send_binary_content($this->FAIscript,$this->cn.".FAIscript");
+            send_binary_content($this->FAIscript,$this->cn.".FAIscript","text/plain");
         }
 
         /* Create download button*/
