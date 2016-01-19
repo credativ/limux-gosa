@@ -96,6 +96,11 @@ class userinfo
     $this->result_cache =array();
     $this->reset_acl_cache();
     $ldap= $this->config->get_ldap_link();
+    if (translate_objectpath_enabled()) {
+      $ldap->cd($this->config->current['STOREBASE']);
+    } else {
+      $ldap->cd($this->config->current['BASE']);
+    }
 
     /* Get member groups... */
     $ldap->search("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", array('dn'));
