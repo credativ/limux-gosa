@@ -812,6 +812,11 @@ class config  {
         $this->tdepartments= array();
 
         $ldap= $this->get_ldap_link();
+
+        $ldap->cat($this->current['STOREBASE'], array("gosaUnitTag"));
+        $attrs= $ldap->fetch();
+        $unitTag = $attrs["gosaUnitTag"][0];
+
         $ldap->cd ($this->current['USERSTORERDN'] . $this->current['STOREBASE']);
         $ldap->search ("(lhmObjectPath=*)", array("lhmObjectPath"));
 
@@ -836,8 +841,8 @@ class config  {
             $this->department_info[$lhm_object_path] = array("img" => "images/lists/folder.png",
                     "description" => "",
                     "name" => $department_name);
-            // TODO: we don't have a gosa unit tag for departments
-            $this->tdepartments[$lhm_object_path]= "";
+            $this->tdepartments[$lhm_object_path]= $unitTag;
+            $administrative[$lhm_object_path]= $unitTag;
 
             if ($lhm_object_path == $ignore_dn){
                 continue;

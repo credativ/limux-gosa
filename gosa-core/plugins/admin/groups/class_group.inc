@@ -882,7 +882,11 @@ class group extends plugin
         /* Write back to ldap */
         $ldap->cd($this->dn);
         $this->cleanup();
-        $ldap->$mode($this->attrs);
+        if ($mode == "add") {
+            $ldap->add($this->attrs, get_ou("core", "groupStoreRDN"));
+        } else {
+            $ldap->$mode($this->attrs);
+        }
 
         /* Remove ACL dependencies too,
          */
@@ -980,7 +984,12 @@ class group extends plugin
             /* Check for used 'cn' */
             $ldap= $this->config->get_ldap_link();
             $ldap->cd($this->config->current['BASE']);
-            $ldap->search("(&(|(objectClass=gosaGroupOfNames)(objectClass=posixGroup))(cn=$this->cn))",array("cn", "gosaUnitTag"));
+            $queryAttrs = array("cn", "gosaUnitTag");
+            if (translate_objectpath_enabled()) {
+              $queryAttrs[] = "cn";
+              $queryAttrs[] = "lhmObjectPath";
+            }
+            $ldap->search("(&(|(objectClass=gosaGroupOfNames)(objectClass=posixGroup))(cn=$this->cn))",$queryAttrs);
 
             if ($ldap->count() != 0){
                 while ($entry = $ldap->fetch()) {
@@ -991,7 +1000,12 @@ class group extends plugin
                     $tag = $this->gosaUnitTag;
                   }
                   if (!in_array('gosaUnitTag', $entry) || $entry['gosaUnitTag'][0] == $tag) {
-                    if (mb_strtolower($ldap->getDN()) != mb_strtolower($this->orig_dn)){
+                    if (translate_objectpath_enabled()) {
+                        $found_dn = LDAP::convert("cn=".$entry["cn"][0].",".$entry["lhmObjectPath"][0]);
+                    } else {
+                        $found_dn = $ldap->getDN();
+                    }
+                    if (mb_strtolower($found_dn) != mb_strtolower($this->orig_dn)){
                       $message[] = (_("Another group of the same name already exists, saving or creating this group is not allowed. Please rename the group or remove the other group."));
                       break;
                     }
@@ -1124,6 +1138,15 @@ class group extends plugin
                             "description"   => _("RDN for object group storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_ogroupRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE),
+
+                        array(
+                            "name"          => "ogroupStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=groups,",
+                            "description"   => _("RDN for object group storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE)),
 

@@ -631,12 +631,30 @@ DEBUG_SI      = 256"),
                                 "mandatory"     => FALSE),
 
                         array(
+                                "name"          => "userStoreRDN",
+                                "type"          => "rdn",
+                                "default"       => "ou=people,",
+                                "description"   => _("Location component for user storage inside of departments."),
+                                "check"         => "gosaProperty::isRdn",
+                                "group"         => "user",
+                                "mandatory"     => FALSE),
+
+                        array(
                                 "name"          => "groupRDN",
                                 "type"          => "rdn",
                                 "default"       => "ou=groups,",
                                 "description"   => _("Location component for group storage inside of departments."),
                                 "check"         => "gosaProperty::isRdn",
                                 "migrate"       => "migrate_groupRDN",
+                                "group"         => "group",
+                                "mandatory"     => FALSE),
+
+                        array(
+                                "name"          => "groupStoreRDN",
+                                "type"          => "rdn",
+                                "default"       => "ou=groups,",
+                                "description"   => _("Location component for group storage inside of departments."),
+                                "check"         => "gosaProperty::isRdn",
                                 "group"         => "group",
                                 "mandatory"     => FALSE),
 

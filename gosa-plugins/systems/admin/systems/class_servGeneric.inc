@@ -357,10 +357,20 @@ class servgeneric extends plugin
             $ldap= $this->config->get_ldap_link();
             # Do not allow objects with the same name in other departments, either
             $ldap->cd ($this->config->current['BASE']);
-            $ldap->search ("(cn=".$this->cn.")", array("cn", "gosaUnitTag"));
+            $queryAttrs = array("cn", "gosaUnitTag");
+            if (translate_objectpath_enabled()) {
+                $queryAttrs[] = "lhmObjectPath";
+            }
+            $ldap->search ("(cn=".$this->cn.")", $queryAttrs);
             if ($ldap->count() != 0){
                 while ($attrs= $ldap->fetch()){
-                    if ($attrs['dn'] != $this->orig_dn){
+                    if (translate_objectpath_enabled()) {
+                        $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+                    } else {
+                        $found_dn = $attrs['dn'];
+                    }
+
+                    if ($found_dn != $this->orig_dn){
 
                         $matchesArp = FALSE;
                         if(class_available("ArpNewDevice")){
@@ -440,7 +450,7 @@ class servgeneric extends plugin
             $ldap->cd($this->config->current['BASE']);
             $ldap->create_missing_trees(preg_replace('/^[^,]+,/', '', $this->dn));
             $ldap->cd($this->dn);
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("servgeneric", "serverStoreRDN"));
             new log("create","server/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
             $mode= "add";
         } else {
@@ -551,6 +561,16 @@ class servgeneric extends plugin
                             "description"   => _("RDN for server storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_serverRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+
+                        array(
+                            "name"          => "serverStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=servers,ou=systems,",
+                            "description"   => _("RDN for server storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             )

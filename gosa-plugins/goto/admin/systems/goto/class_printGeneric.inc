@@ -77,6 +77,10 @@ class printgeneric extends plugin
             return;
         }
 
+        if (translate_objectpath_enabled()) {
+            $this->objectclasses[] = "lhmObject";
+        }
+
         /* Update dn, to ensure storing as printer instead of WS / terminal */
         if(preg_match("/Terminal/i",$this->BelongsTo) || preg_match("/TerminalTemplate/i",$this->BelongsTo)){
             $this->dn= preg_replace("/".preg_quote(get_ou("termgeneric", "terminalRDN"), '/')."/i",get_ou("printgeneric", "printerRDN"),$this->dn);
@@ -1011,7 +1015,7 @@ class printgeneric extends plugin
                 }
             }
 
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("printgeneric", "printerStoreRDN"));
             $this->handle_post_events("add",array("macAddress" => $this->netConfigDNS->macAddress,"ipHostNumber" => $this->netConfigDNS->ipHostNumber));
             new log("create","printer/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
         } else {
@@ -1078,6 +1082,16 @@ class printgeneric extends plugin
                             "description"   => _("RDN for printer storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_printerRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+
+                        array(
+                            "name"          => "printerStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=printers,ou=systems,",
+                            "description"   => _("RDN for printer storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             )

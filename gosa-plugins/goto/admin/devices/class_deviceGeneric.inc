@@ -242,7 +242,7 @@ class deviceGeneric extends plugin
         }else{
             $ldap->create_missing_trees(preg_replace("/^[^,]+,/","",$this->dn));
             $ldap->cd($this->dn);
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("deviceGeneric", "deviceStoreRDN"));
         }
         if (!$ldap->success()){
             msg_dialog::display(_("LDAP error"), msgPool::ldaperror($ldap->get_error(), $this->dn, 0, get_class()));
@@ -321,6 +321,15 @@ class deviceGeneric extends plugin
                             "description"   => _("RDN for device storage."),
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_deviceRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE),
+
+                        array(
+                            "name"          => "deviceStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=devices,",
+                            "description"   => _("RDN for device storage."),
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE)),
 

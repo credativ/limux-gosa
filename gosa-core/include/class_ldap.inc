@@ -381,6 +381,25 @@ class LDAP
         return $filter;
     }
 
+    function logicalToStoreDn($logical_dn)
+    {
+        global $config;
+
+        if (translate_objectpath_enabled() && str_endswith($logical_dn, $config->current['BASE'])) {
+            // ideally we'd get an srp passed as a parameter
+            $srp = $this->getSearchResource();
+            $this->cat($srp, $logical_dn, array("dn"));
+            if(!$this->success()){
+                return "";
+            }
+            $attrs = $this->fetch($srp);
+
+            return $attrs['dn'];
+        } else {
+            return $logical_dn;
+        }
+    }
+
     function search($srp, $filter, $attrs= array(), $filter_unittag=FALSE, $include_empty_tags=FALSE)
     {
         global $config;
@@ -637,6 +656,8 @@ class LDAP
             if ($dn == "")
                 $dn = $this->basedn;
 
+            $dn = $this->logicalToStoreDn($dn);
+
             $r = ldap_mod_del($this->cid, LDAP::fix($dn), $attrs);
             $this->error = @ldap_error($this->cid);
             return($r);
@@ -652,6 +673,8 @@ class LDAP
             if ($this->reconnect) $this->connect();
             if ($dn == "")
                 $dn = $this->basedn;
+
+            $dn = $this->logicalToStoreDn($dn);
 
             $r = @ldap_mod_add($this->cid, LDAP::fix($dn), $attrs);
             $this->error = @ldap_error($this->cid);
@@ -669,6 +692,8 @@ class LDAP
             if ($dn == "")
                 $dn = $this->basedn;
 
+            $dn = $this->logicalToStoreDn($dn);
+
             $r = @ldap_mod_replace($this->cid, LDAP::fix($dn), $attrs);
             $this->error = @ldap_error($this->cid);
             return($r);
@@ -682,6 +707,8 @@ class LDAP
     {
         if($this->hascon){
             if ($this->reconnect) $this->connect();
+            $deletedn = $this->logicalToStoreDn($deletedn);
+
             $r = @ldap_delete($this->cid, LDAP::fix($deletedn));
             $this->error = @ldap_error($this->cid);
             return($r ? $r : 0);
@@ -766,6 +793,8 @@ class LDAP
             }
 
             /* Finally Delete own Node */
+            $deletedn = $this->logicalToStoreDn($deletedn);
+
             $r = @ldap_delete($this->cid, LDAP::fix($deletedn));
             $this->error = @ldap_error($this->cid);
             return($r ? $r : 0);
@@ -803,9 +832,11 @@ class LDAP
             return (0);
         }
         if($this->hascon){
+            $dn = $this->logicalToStoreDn($this->basedn);
+
             $start = microtime(TRUE);
             if ($this->reconnect) $this->connect();
-            $r = @ldap_modify($this->cid, LDAP::fix($this->basedn), $attrs);
+            $r = @ldap_modify($this->cid, LDAP::fix($dn), $attrs);
             $this->error = @ldap_error($this->cid);
             if(!$this->success()){
                 $this->error.= $this->makeReadableErrors($this->error,$attrs);
@@ -836,14 +867,35 @@ class LDAP
         }
     }
 
-    function add($attrs)
+    function add($attrs, $storeRdn = "")
     {
+        global $config;
+
         $this->remove_empty_attributes($attrs);
         
         if($this->hascon){
             $start = microtime(TRUE);
             if ($this->reconnect) $this->connect();
-            $r = @ldap_add($this->cid, LDAP::fix($this->basedn), $attrs);
+
+            if (translate_objectpath_enabled() && str_endswith($this->basedn, $config->current['BASE'])) {
+                if (in_array("person", $attrs['objectClass'])) {
+                    $primaryAttr = "uid";
+                } else {
+                    $primaryAttr = "cn";
+                }
+
+                $base = $primaryAttr."=".$attrs[$primaryAttr] . "," . $storeRdn . $config->current['STOREBASE'];
+
+                if (!in_array("lhmObject", $attrs['objectClass'])) {
+                    $attrs['objectClass'][] = "lhmObject";
+                }
+
+                $attrs['lhmObjectPath'] = $this->getParentDir($this->basedn);
+            } else{
+                $base = $this->basedn;
+            }
+
+            $r = @ldap_add($this->cid, LDAP::fix($base), $attrs);
             $this->error = @ldap_error($this->cid);
             if(!$this->success()){
                 $this->error.= $this->makeReadableErrors($this->error,$attrs);
@@ -863,6 +915,11 @@ class LDAP
     function create_missing_trees($srp, $target)
     {
         global $config;
+
+        if (translate_objectpath_enabled()) {
+            // flat hierachy -> no need to create the tree
+            return;
+        }
 
         $real_path= substr($target, 0, strlen($target) - strlen($this->basedn) -1 );
 
@@ -1019,6 +1076,10 @@ class LDAP
     // \param string dn The DN of the object whose parent DNs shall be removed
     // \param array included_rdns
     static function rm_obsolete_trees($dn, $included_rdns=array()) {
+      if (translate_objectpath_enabled()) {
+        // flat hierachy -> impossible to remove tree
+        return;
+      }
 
       global $config;
       $ldap = $config->get_ldap_link();
@@ -1248,7 +1309,15 @@ class LDAP
 
     function dn_exists($dn)
     {
-        return @ldap_list($this->cid, LDAP::fix($dn), "(objectClass=*)", array("objectClass"));
+        global $config;
+
+        if (translate_objectpath_enabled() && str_endswith($dn, $config->current['BASE'])) {
+            $srp = $this->getSearchResource();
+            $this->ls($srp, $dn, array("dn"));
+            return $this->count($srp) > 0;
+        } else {
+            return @ldap_list($this->cid, LDAP::fix($dn), "(objectClass=*)", array("objectClass"));
+        }
     }
 
 

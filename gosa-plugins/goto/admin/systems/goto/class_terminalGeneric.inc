@@ -574,7 +574,7 @@ another location! */
             if (!count($this->attrs['gotoNtpServer'])){
                 unset($this->attrs['gotoNtpServer']);
             }
-            $ldap->add($this->attrs);
+            $ldap->add($this->attrs, get_ou("termgeneric", "terminalStoreRDN"));
             new log("create","terminal/".get_class($this),$this->dn,array_keys($this->attrs),$ldap->get_error());
 
             $this->netConfigDNS->cn = $this->cn;
@@ -716,6 +716,18 @@ another location! */
 
                             "check"         => "gosaProperty::isRdn",
                             "migrate"       => "migrate_terminalRDN",
+                            "group"         => "plugin",
+                            "mandatory"     => FALSE
+                            ),
+
+                        array(
+                            "name"          => "terminalStoreRDN",
+                            "type"          => "rdn",
+                            "default"       => "ou=terminals,ou=systems,",
+                            "description"   => _("RDN for terminal storage."),
+                            "ghInventoryNumber" => _("Inventory Number"),
+
+                            "check"         => "gosaProperty::isRdn",
                             "group"         => "plugin",
                             "mandatory"     => FALSE
                             )
