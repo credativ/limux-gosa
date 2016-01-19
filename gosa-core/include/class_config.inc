@@ -821,22 +821,39 @@ class config  {
         $ldap->search ("(lhmObjectPath=*)", array("lhmObjectPath"));
 
         $unique_ous = array();
+        $relative_object_path_list = array("");
         while ($attrs= $ldap->fetch()){
             $lhm_object_path = $attrs["lhmObjectPath"][0];
+
+            if (!str_endswith($lhm_object_path, $result['/']) || ($lhm_object_path == $result['/'])) {
+                continue;
+            }
+
+            $relative_dn = substr($lhm_object_path, 0, strlen($lhm_object_path) - strlen($result['/']) - 1);
+            $relative_object_path_list[] = $relative_dn;
+
+            // add parent departments in case they don't contain any users
+            while (preg_match("/^([^=]+)=([^,]+),(.+)$/", $relative_dn, $matches)) {
+                $relative_object_path_list[] = $matches[3];
+                $relative_dn = $matches[3];
+            }
+        }
+
+        // remove duplicates
+        $relative_object_path_list = array_unique($relative_object_path_list);
+
+        foreach ($relative_object_path_list as $relative_dn) {
+            if ($relative_dn == "") {
+                $lhm_object_path = $result['/'];
+            } else {
+                $lhm_object_path = $relative_dn . "," . $result['/'];
+            }
 
             if (!preg_match("/^([^=]+)=([^,]+)/", $lhm_object_path, $matches)) {
                 continue;
             }
             $type = $matches[1];
             $department_name = $matches[2];
-
-            $pos = strrpos($lhm_object_path, $result['/']);
-            if ($pos !== false) {
-                $relative_dn = substr($lhm_object_path, 0, strlen($lhm_object_path) - strlen($result['/']) - 1);
-            }
-            else {
-                $relative_dn = $lhm_object_path;
-            }
 
             $this->department_info[$lhm_object_path] = array("img" => "images/lists/folder.png",
                     "description" => "",
