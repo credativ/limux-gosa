@@ -875,6 +875,48 @@ class config  {
             }
         }
 
+
+        // Also add the real DN of departments to adepartments and tdepartments
+
+        $types = departmentManagement::get_support_departments();
+        $ldap_values = array("objectClass","gosaUnitTag");
+        $filter = "";
+        foreach($types as $type){
+            $ldap_values[] = $type['ATTR'];
+            $filter .= "(objectClass=".$type['OC'].")";
+        }
+        $filter = "(&(objectClass=gosaDepartment)(|".$filter."))";
+
+        $ldap->cd ($this->current['STOREBASE']);
+        $ldap->search ($filter, array('objectClass', 'gosaUnitTag'));
+        while ($attrs= $ldap->fetch()){
+
+            /* Detect department type */
+            $type_data = array();
+            foreach($types as $t => $data){
+                if(in_array_strict($data['OC'],$attrs['objectClass'])){
+                    $type_data = $data;
+                    break;
+                }
+            }
+
+            /* Unknown department type -> skip */
+            if(!count($type_data)) continue;
+
+            $dn= $ldap->getDN();
+            /* Save administrative departments */
+            if (in_array_ics("gosaAdministrativeUnit", $attrs['objectClass']) &&
+                    isset($attrs['gosaUnitTag'][0])){
+                $administrative[$dn]= $attrs['gosaUnitTag'][0];
+                $this->tdepartments[$dn]= $attrs['gosaUnitTag'][0];
+            }
+
+            if (in_array_ics("gosaAdministrativeUnitTag", $attrs['objectClass']) &&
+                    isset($attrs['gosaUnitTag'][0])){
+                $this->tdepartments[$dn]= $attrs['gosaUnitTag'][0];
+            }
+        }
+
         $this->adepartments= $administrative;
         $this->departments= $result;
     }
