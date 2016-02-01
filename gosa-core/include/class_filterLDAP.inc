@@ -144,7 +144,9 @@ class filterLDAP {
               $primaryAttr = "cn";
             }
 
-            $dn = LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+            if (isset($attrs["lhmObjectPath"])) {
+              $dn = LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+            }
           }
         }
 
