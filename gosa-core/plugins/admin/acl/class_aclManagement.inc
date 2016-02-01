@@ -144,7 +144,7 @@ class aclManagement extends management
   
 
   // A filter which allows to open a department by clicking on the departments name.
-  static function filterLabel($row,$dn,$ou= array(),$pid=0,$base="")
+  static function filterLabel($row,$dn,$ou= array(),$cn= array(),$pid=0,$base="")
   {
     $ou = $ou[0];
     if($dn == $base){
