@@ -8,7 +8,7 @@ class filterINCOMING {
         global $config;
 
         // Override base and scope to search for incoming objects
-        $base = (get_ou("ArpNewDevice", "systemIncomingRDN") . $config->current['BASE']);
+        $base = (get_ou("ArpNewDevice", "systemIncomingRDN") . store_base());
         $scope = "sub";
         $entries = filterSYSTEMS::query($base, $scope, $filter, $attributes,
            $category, $objectStorage);
