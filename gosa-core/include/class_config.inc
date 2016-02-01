@@ -859,7 +859,9 @@ class config  {
                     "description" => "",
                     "name" => $department_name);
             $this->tdepartments[$lhm_object_path]= $unitTag;
-            $administrative[$lhm_object_path]= $unitTag;
+            if ($lhm_object_path == $this->current['BASE']) {
+                $administrative[$lhm_object_path]= $unitTag;
+            }
 
             if ($lhm_object_path == $ignore_dn){
                 continue;
