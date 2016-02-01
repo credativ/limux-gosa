@@ -1826,9 +1826,11 @@ class plugin
       }
   }
 
-  protected function correct_orphaned_base(){
+  protected function correct_orphaned_base($silent_update=false){
       if(!isset($this->config->idepartments[$this->base])){
-          msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
+          if (!$silent_update) {
+              msg_dialog::display(_("Warning"), sprintf(_("This is an orphaned object. Setting base to '%s'!"), session::get('CurrentMainBase')) , WARNING_DIALOG);
+          }
           $this->base = session::get('CurrentMainBase');
       }
   }

@@ -114,16 +114,17 @@ class printgeneric extends plugin
             $this->base= dn2base(session::global_is_set("CurrentMainBase")?"cn=dummy,".session::global_get("CurrentMainBase"):$ui->dn);
             $this->cn= "";
         } else {
-
+            $is_incoming = false;
             /* Set base and check if the extracted base exists */
             if(class_available("ArpNewDevice") &&
                 preg_match("/".preg_quote(get_ou("ArpNewDevice", "systemIncomingRDN"), '/')."/i",$this->dn)){
                 $this->base= preg_replace("/".preg_quote(get_ou("ArpNewDevice", "systemIncomingRDN"), '/')."/i","",dn2base($this->dn));
+                $is_incoming = true;
             }else{
                 $this->base= preg_replace("/".preg_quote(get_ou("printgeneric", "printerRDN"), '/')."/i","",dn2base($this->dn));
             }
 
-            $this->correct_orphaned_base();
+            $this->correct_orphaned_base($is_incoming);
         }
 
         /* If no ppd is selected, remove this attribute */
