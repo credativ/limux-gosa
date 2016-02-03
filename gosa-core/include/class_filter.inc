@@ -324,11 +324,11 @@ class filter {
             if ($this->search == "orphaned_objects") {
               $scope = "sub";
               $attributes[] = "lhmObjectPath";
+              $result= array_merge($result, call_user_func(array($backend, 'query'), store_base(), $scope, $filter, $this->attributes, $this->category, $this->objectStorage));
             } else {
               $scope = $this->scope;
+              $result= array_merge($result, call_user_func(array($backend, 'query'), $this->base, $scope, $filter, $this->attributes, $this->category, $this->objectStorage));
             }
-
-            $result= array_merge($result, call_user_func(array($backend, 'query'), $this->base, $scope, $filter, $this->attributes, $this->category, $this->objectStorage));
         }
 
         // Filter duplicates
