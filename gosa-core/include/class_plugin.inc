@@ -996,6 +996,17 @@ class plugin
 
      $attrs = array("lhmObjectPath" => $objectPath);
 
+     // add lhmObject objectClass if it doesn't exist already
+     $ldap->cat($dn, array("objectClass"));
+     $attrsOrig = $ldap->fetch();
+
+     if (!in_array_strict("lhmObject", $attrsOrig['objectClass'])) {
+       for($i = 0 ; $i < $attrsOrig['objectClass']['count'] ; $i++){
+         $attrs['objectClass'][] = $attrsOrig['objectClass'][$i];
+       }
+       $attrs['objectClass'][] = "lhmObject";
+     }
+
      $ldap->cd($dn);
      $r = $ldap->modify($attrs);
   }
