@@ -1024,7 +1024,7 @@ class plugin
 
     $ldap= $this->config->get_ldap_link();
 
-    if (translate_objectpath_enabled() && str_endswith($src_dn, $this->config->current['BASE'])) {
+    if (translate_objectpath_enabled() && str_endswith($dst_dn, $this->config->current['BASE'])) {
         /* dest_dn            = rdn(dest_logical_dn) . "," . parent(source_dn)
            dest_lhmObjectPath = parent(dest_logical)
         */
