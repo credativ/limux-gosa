@@ -5482,6 +5482,11 @@ msgstr ""
 msgid "Changing ACL DN from %s to %s"
 msgstr ""
 
+#: include/class_plugin.inc:1850
+#, php-format
+msgid "This is an orphaned object. Setting base to '%s'!"
+msgstr ""
+
 #: include/class_ldap.inc:361 include/class_ldap.inc:403
 msgid "Performance warning"
 msgstr ""
