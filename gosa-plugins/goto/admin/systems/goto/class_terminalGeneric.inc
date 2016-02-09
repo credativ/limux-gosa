@@ -126,15 +126,19 @@ class termgeneric extends plugin
         $this->modes["active"]= _("Activated");
 
         /* Set base */
+        $is_incoming = false;
         if ($this->dn == "new"){
             $ui= get_userinfo();
             $this->base= dn2base(session::global_is_set("CurrentMainBase")?"cn=dummy,".session::global_get("CurrentMainBase"):$ui->dn);
         } elseif(class_available("ArpNewDevice") &&
                 preg_match("/".preg_quote(get_ou("ArpNewDevice", "systemIncomingRDN"), '/')."/i", $this->dn)){
             $this->base= preg_replace ("/^[^,]+,".preg_quote(get_ou("ArpNewDevice", "systemIncomingRDN"), '/')."/i", "", $this->dn);
+            $is_incoming = true;
         } else {
             $this->base= preg_replace ("/^[^,]+,".preg_quote(get_ou("termgeneric", "terminalRDN"), '/')."/i", "", $this->dn);
         }
+
+        $this->correct_orphaned_base($is_incoming);
 
         /* Create an array of all Syslog servers */
         $tmp = $this->config->data['SERVERS']['SYSLOG'];
