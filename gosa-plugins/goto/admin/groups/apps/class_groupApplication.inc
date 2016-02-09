@@ -28,8 +28,8 @@ class appgroup extends plugin
 
     public function __construct(&$config, $dn= NULL, $parent= NULL)
     {
-        plugin::plugin($config,$dn,$parent);
-        $this->dn = $dn; 
+        plugin::plugin($config,$config->get_ldap_link()->logicalToStoreDn($dn),$parent);
+
         $this->_load_menu_structure();
         $this->a_Structure_on_load = $this->a_Structure;
 
@@ -43,7 +43,7 @@ class appgroup extends plugin
             $this->FAIrelease = "/";
         }
 
-        $this->curbase    = $this->config->current['BASE'];
+        $this->curbase    = store_base();
         $this->reload();
 
         /* If we have at least one assigned application-
@@ -85,7 +85,7 @@ class appgroup extends plugin
             /* First of all, get all application departments to search in.
              */  
             $ldap = $this->config->get_ldap_link();
-            $ldap->cd($this->config->current['BASE']);
+            $ldap->cd(store_base());
             $ldap->search("ou=apps",array("dn"));
             $app_deps = array();
             while($attrs = $ldap->fetch()){
@@ -160,7 +160,7 @@ class appgroup extends plugin
 
             /* Only display those releases that we are able to read 
              */
-            $dn     = get_ou("application", "applicationRDN").$this->config->current['BASE'];
+            $dn     = get_ou("application", "applicationRDN").store_base();
             $filter = "(&(objectClass=organizationalUnit)(objectClass=FAIbranch))";
             $res    = get_sub_list($filter,array("application","fai"), 
                     array(get_ou("application", "applicationRDN"),get_ou("faiManagement", "faiBaseRDN")),$dn, array("ou","FAIstate"), GL_SUBSEARCH);
@@ -497,7 +497,7 @@ class appgroup extends plugin
 
         /* Create base back entry */
         $base_back = preg_replace("/^[^,]+,/","",$this->curbase);
-        if((strlen($base_back)>= strlen($this->config->current['BASE']))&&($this->curbase!=$this->config->current['BASE'])){
+        if((strlen($base_back)>= strlen(store_base()))&&($this->curbase!=store_base())){
             $departments[$base_back]=".. ["._("back")."]";
         }
 
@@ -1412,6 +1412,8 @@ class appgroup extends plugin
                 }
             }while(is_array($cur));
 
+            // $this->dn is reset by tabs::save() so resolve store DN again
+            $this->dn = $ldap->logicalToStoreDn($this->dn);
             $cur_dn = $dn.$this->dn;
             $attrs = array();
 
@@ -1509,7 +1511,7 @@ class appgroup extends plugin
         /* First remove entries
          */
         $ldap = $this->config->get_ldap_link();
-        $ldap->cd($this->config->current['BASE']);
+        $ldap->cd(store_base());
         foreach($Actions['Remove'] as $dn){
             $ldap->cd($dn);
             $ldap->cat($dn);
