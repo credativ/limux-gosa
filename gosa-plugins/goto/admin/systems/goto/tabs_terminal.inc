@@ -94,9 +94,17 @@ class termtabs extends tabs
 
     if($this->dn != $baseobject->orig_dn && $baseobject->orig_dn != "new"){
 
-      /* Udpate acls */
-      $baseobject->update_acls($baseobject->orig_dn,$this->dn);
-      $baseobject->move($baseobject->orig_dn,$this->dn);
+      if (translate_objectpath_enabled() && !str_endswith($baseobject->orig_dn, $this->config->current['BASE'])) {
+        $store_dn = "cn=".$cn.",".get_ou("termgeneric", "terminalStoreRDN").store_base();
+        /* move DN */
+        $baseobject->move($baseobject->orig_dn,$store_dn);
+        /* move object path */
+        $baseobject->move($store_dn,$this->dn);
+      } else {
+        /* Udpate acls */
+        $baseobject->update_acls($baseobject->orig_dn,$this->dn);
+        $baseobject->move($baseobject->orig_dn,$this->dn);
+      }
     }
 
     foreach ($this->by_object as $key => $obj){

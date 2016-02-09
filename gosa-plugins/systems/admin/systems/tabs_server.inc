@@ -106,15 +106,28 @@ class servtabs extends tabs
     $this->dn= "cn={$cn},".get_ou("servgeneric", "serverRDN").$baseobject->base;
 
     /* cn is not case sensitive for ldap, but for php it is!! */
+    $dn_changed = false;
     if($baseobject->orig_dn != "new"){
       if($this->config->get_cfg_value("core","accountPrimaryAttribute") == "cn"){
         if (strtolower($baseobject->orig_dn) != (strtolower($this->dn))){
-          $baseobject->recursive_move($baseobject->orig_dn, $this->dn);
+          $dn_changed = true;
         }
       }else{
         if ($baseobject->orig_dn != $this->dn){
-          $baseobject->recursive_move($baseobject->orig_dn, $this->dn);
+          $dn_changed = true;
         }
+      }
+    }
+
+    if ($dn_changed) {
+      if (translate_objectpath_enabled() && !str_endswith($baseobject->orig_dn, $this->config->current['BASE'])) {
+        $store_dn = "cn=".$cn.",".get_ou("servgeneric", "serverStoreRDN").store_base();
+        /* move DN */
+        $baseobject->move($baseobject->orig_dn,$store_dn);
+        /* move object path */
+        $baseobject->move($store_dn,$this->dn);
+      } else {
+        $baseobject->recursive_move($baseobject->orig_dn, $this->dn);
       }
     }
 
