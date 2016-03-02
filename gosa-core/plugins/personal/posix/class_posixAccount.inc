@@ -665,7 +665,7 @@ class posixAccount extends plugin
           }
         }
         add_lock ("uidnumber", "gosa");
-        $this->uidNumber= get_next_id("uidNumber", $this->dn);
+        $this->uidNumber= get_next_id("uidNumber", $this->config->get_ldap_link()->logicalToStoreDn($this->dn));
       }
     }
 
@@ -699,7 +699,7 @@ class posixAccount extends plugin
 
         /* Request a new and uniqe gidNumber, if required */
         if(!$this->force_ids){
-          $this->gidNumber= get_next_id("gidNumber", $this->dn);
+          $this->gidNumber= get_next_id("gidNumber", $ldap->logicalToStoreDn($this->dn));
         }
 
         /* If forced gidNumber could not be found, then check if the given group name already exists 

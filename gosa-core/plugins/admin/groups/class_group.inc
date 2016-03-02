@@ -755,8 +755,15 @@ class group extends plugin
                         break;
                     }
                 }
+
+                if (translate_objectpath_enabled() && str_endswith($this->dn, $this->config->current['BASE'])) {
+                    $dn = 'cn='.$this->cn.','.get_ou("core", "groupStoreRDN").store_base();
+                } else {
+                    $dn = $this->dn;
+                }
+
                 add_lock ("gidnumber", "gosa");
-                $this->gidNumber= get_next_id("gidNumber", $this->dn);
+                $this->gidNumber= get_next_id("gidNumber", $dn);
             }
         }
         
