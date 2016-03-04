@@ -1313,7 +1313,7 @@ class LDAP
 
         if (translate_objectpath_enabled() && str_endswith($dn, $config->current['BASE'])) {
             $srp = $this->getSearchResource();
-            $this->ls($srp, $dn, array("dn"));
+            $this->ls($srp, "(objectclass=*)", $dn, array("dn"));
             return $this->count($srp) > 0;
         } else {
             return @ldap_list($this->cid, LDAP::fix($dn), "(objectClass=*)", array("objectClass"));
