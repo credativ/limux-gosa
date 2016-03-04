@@ -168,13 +168,16 @@ class ogroup extends plugin
 
     function AddDelMembership($NewMember = false){
 
+        $ldap = $this->config->get_ldap_link();
+
         if($NewMember){
+
+            $NewMember = $ldap->logicalToStoreDn($NewMember);
 
             // Ensure that we definitely know the new members attributes.
             //  - Fetch unknown objects here. 
             if(!isset($this->memberList[$NewMember])){
 
-                $ldap = $this->config->get_ldap_link();
                 $ldap->cd($this->config->current['BASE']);
                 $ldap->cat($NewMember);
                 $attrs = $ldap->fetch();
@@ -223,7 +226,7 @@ class ogroup extends plugin
                 }
 
                 foreach($objects as $object){
-                    $dn = $object['dn'];
+                    $dn = $ldap->logicalToStoreDn($object['dn']);
 
                     // Do not add existing members twice!
                     if(isset($this->member["$dn"])){
