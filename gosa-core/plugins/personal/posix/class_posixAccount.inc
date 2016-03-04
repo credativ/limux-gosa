@@ -167,8 +167,12 @@ class posixAccount extends plugin
       }
 
       /* Get group membership */
+      $fetch_attrs = array("cn", "description");
+      if (translate_objectpath_enabled()) {
+        $fetch_attrs[] = "lhmObjectPath";
+      }
       $ldap->cd($this->config->current['BASE']);
-      $ldap->search("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", array("cn", "description"));
+      $ldap->search("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", $fetch_attrs);
 
       while ($attrs= $ldap->fetch()){
         if (!isset($attrs["description"][0])){
@@ -176,7 +180,12 @@ class posixAccount extends plugin
         } else {
           $entry= $attrs["cn"][0]." [".$attrs["description"][0]."]";
         }
-        $this->groupMembership[$ldap->getDN()]= $entry;
+        if (translate_objectpath_enabled()) {
+          $group_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+        } else {
+          $group_dn = $ldap->getDN();
+        }
+        $this->groupMembership[$group_dn]= $entry;
       }
       asort($this->groupMembership);
       reset($this->groupMembership);
@@ -1009,7 +1018,11 @@ class posixAccount extends plugin
     foreach ($groups as $value){
 
       if (!array_key_exists($value, $this->groupMembership)){
-        $ldap->cat($value, array('cn', 'description', 'dn'));
+        $fetch_attrs = array('cn', 'description', 'dn');
+        if (translate_objectpath_enabled()) {
+          $fetch_attrs[] = "lhmObjectPath";
+        }
+        $ldap->cat($value, $fetch_attrs);
         $attrs= $ldap->fetch();
         error_reporting (0);
         if (!isset($attrs['description'][0])){
@@ -1020,10 +1033,16 @@ class posixAccount extends plugin
         }
         error_reporting (E_ALL | E_STRICT);
 
-        if(obj_is_writable($attrs['dn'],"groups/group","memberUid")){
-          $this->groupMembership[$attrs['dn']]= $entry;
-          if($this->multiple_support_active && isset($this->groupMembership_some[$attrs['dn']])){
-            unset($this->groupMembership_some[$attrs['dn']]);
+        if (translate_objectpath_enabled()) {
+          $dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+        } else {
+          $dn = $attrs['dn'];
+        }
+
+        if(obj_is_writable($dn,"groups/group","memberUid")){
+          $this->groupMembership[$dn]= $entry;
+          if($this->multiple_support_active && isset($this->groupMembership_some[$dn])){
+            unset($this->groupMembership_some[$dn]);
           }
         }
       }
