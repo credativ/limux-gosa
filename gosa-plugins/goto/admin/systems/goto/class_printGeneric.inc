@@ -800,13 +800,24 @@ class printgeneric extends plugin
         if (($this->orig_dn != $dn)&&( preg_match("/printer/i",$this->BelongsTo))){
             $ldap= $this->config->get_ldap_link();
             $ldap->cd ($this->base);
-            $ldap->ls("(cn=".$this->cn.")",get_ou("printgeneric", "printerRDN").$this->base, array("cn"));
+            $fetch_attrs = array("cn");
+            if (translate_objectpath_enabled()) {
+              $fetch_attrs[] = "lhmObjectPath";
+            }
+            $ldap->ls("(cn=".$this->cn.")",get_ou("printgeneric", "printerRDN").$this->base, $fetch_attrs);
             if ($ldap->count() != 0){
                 while ($attrs= $ldap->fetch()){
                     if(preg_match("/cn=dhcp,/",$attrs['dn'])){
                         continue;
                     }
-                    if ($attrs['dn'] != $this->orig_dn){
+
+                    if (translate_objectpath_enabled()) {
+                        $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+                    } else {
+                        $found_dn = $attrs['dn'];
+                    }
+
+                    if ($found_dn != $this->orig_dn){
                         $message[]= msgPool::duplicated(_("Name"));
                         break;
                     }
