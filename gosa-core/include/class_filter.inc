@@ -582,7 +582,24 @@ class filter {
     }
 
     function setExcludeDns($dns) {
+        global $config;
+
         $this->excludeDns = $dns;
+
+        if (translate_objectpath_enabled()) {
+            $ldap = $attr = $config->get_ldap_link();
+            foreach ($dns as $dn) {
+                if (str_endswith($dn, store_base())) {
+                    $ldap->cat($dn, array("lhmObjectPath"));
+
+                    if($ldap->count()){
+                        $attrs = $ldap->fetch();
+                        $rdn = preg_replace("/,.*$/","",$dn);
+                        $this->excludeDns[] = $rdn . "," . $attrs["lhmObjectPath"][0];
+                    }
+                }
+            }
+        }
     }
 
 }
