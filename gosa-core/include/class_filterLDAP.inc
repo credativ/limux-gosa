@@ -145,7 +145,7 @@ class filterLDAP {
             }
 
             if (isset($attrs["lhmObjectPath"]) && str_endswith($attrs["lhmObjectPath"][0], $config->current['BASE'])) {
-              $dn = LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+              $dn = $ldap->storeToLogicalDn($primaryAttr, $attrs, $dn);
             }
           }
         }

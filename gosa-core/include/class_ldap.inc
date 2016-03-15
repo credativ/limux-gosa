@@ -400,6 +400,11 @@ class LDAP
         }
     }
 
+    function storeToLogicalDn($primaryAttr, $attrs, $store_dn)
+    {
+        return LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+    }
+
     function search($srp, $filter, $attrs= array(), $filter_unittag=FALSE, $include_empty_tags=FALSE)
     {
         global $config;

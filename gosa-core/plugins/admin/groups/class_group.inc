@@ -1008,7 +1008,7 @@ class group extends plugin
                   }
                   if (!in_array('gosaUnitTag', $entry) || $entry['gosaUnitTag'][0] == $tag) {
                     if (translate_objectpath_enabled()) {
-                        $found_dn = LDAP::convert("cn=".$entry["cn"][0].",".$entry["lhmObjectPath"][0]);
+                        $found_dn = $ldap->storeToLogicalDn("cn", $entry, $ldap->getDN());
                     } else {
                         $found_dn = $ldap->getDN();
                     }

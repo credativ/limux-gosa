@@ -812,7 +812,7 @@ class printgeneric extends plugin
                     }
 
                     if (translate_objectpath_enabled()) {
-                        $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+                        $found_dn = $ldap->storeToLogicalDn("cn", $attrs, $attrs['dn']);
                     } else {
                         $found_dn = $attrs['dn'];
                     }

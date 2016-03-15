@@ -662,7 +662,7 @@ function ldap_login_user ($username, $password)
   $real_dn = $ldap->getDN();
   if (translate_objectpath_enabled() && (strpos($real_dn, $config->current['STOREBASE']) !== false)) {
     // translate from stored dn to logical dn
-    $dn = LDAP::convert("uid=".$attrs['uid'][0].",".$attrs["lhmObjectPath"][0]);
+    $dn = $ldap->storeToLogicalDn("uid", $attrs, $real_dn);
   } else {
     $dn = $real_dn;
   }

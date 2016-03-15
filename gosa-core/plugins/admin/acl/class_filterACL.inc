@@ -138,7 +138,7 @@ class filterACL {
         if (translate_objectpath_enabled() && isset($attrs["lhmObjectPath"][0]) && isset($attrs["cn"][0])) {
           // translate from stored dn to logical dn
           if (strpos($dn, $config->current['STOREBASE']) !== false) {
-            $dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+            $dn = $ldap->storeToLogicalDn("cn", $attrs, $dn);
           }
         }
 

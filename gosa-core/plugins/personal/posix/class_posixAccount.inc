@@ -181,7 +181,7 @@ class posixAccount extends plugin
           $entry= $attrs["cn"][0]." [".$attrs["description"][0]."]";
         }
         if (translate_objectpath_enabled()) {
-          $group_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+          $group_dn = $ldap->storeToLogicalDn("cn", $attrs, $ldap->getDN());
         } else {
           $group_dn = $ldap->getDN();
         }
@@ -1034,7 +1034,7 @@ class posixAccount extends plugin
         error_reporting (E_ALL | E_STRICT);
 
         if (translate_objectpath_enabled()) {
-          $dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+          $dn = $ldap->storeToLogicalDn("cn", $attrs, $attrs['dn']);
         } else {
           $dn = $attrs['dn'];
         }

@@ -697,7 +697,7 @@ class ogroup extends plugin
         if($ldap->count() !=0) {
           $attrs = $ldap->fetch();
           if (translate_objectpath_enabled()) {
-            $found_dn = LDAP::convert("cn=".$attrs["cn"][0].",".$attrs["lhmObjectPath"][0]);
+            $found_dn = $ldap->storeToLogicalDn("cn", $attrs, $ldap->getDN());
           } else {
             $found_dn = $ldap->getDN();
           }
