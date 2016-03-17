@@ -5,6 +5,8 @@ class pathNavigator
 
   static function registerPlugin($class, $title= "")
   {
+    global $config;
+
     $str = "";
 
     // Display headline of management plugins
@@ -25,7 +27,6 @@ class pathNavigator
       // Convert dn to cn
       if(isset($class->dn)){
         if(!session::is_set("pathNavigator::registerPlugin:{$class->dn}")){
-          global $config;
           $ldap = $config->get_ldap_link();
 
           if(!empty($class->dn)){
@@ -41,7 +42,12 @@ class pathNavigator
         }
         $str = session::get("pathNavigator::registerPlugin:{$class->dn}");
         if(empty($title)){
-          $title = $class->dn;
+          $store_dn = $config->get_ldap_link()->logicalToStoreDn($class->dn);
+          if (!empty($store_dn)) {
+            $title = $store_dn;
+          } else {
+            $title = $class->dn;
+          }
         }
       }
     }

@@ -1133,6 +1133,8 @@ function filterDepartmentLink($row, $dn, $description)
 
 function filterLink()
 {
+    global $config;
+
     $result= "&nbsp;";
 
     $row= func_get_arg(0);
@@ -1144,6 +1146,11 @@ function filterLink()
         $titleAttr = $titleAttr[0];
     }
     $titleAttr = LDAP::fix($titleAttr);
+
+    $store_dn = $config->get_ldap_link()->logicalToStoreDn($titleAttr);
+    if (!empty($store_dn)) {
+        $titleAttr = $store_dn;
+    }
 
     $params= array(func_get_arg(2));
 

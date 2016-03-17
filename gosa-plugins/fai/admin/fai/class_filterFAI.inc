@@ -28,7 +28,7 @@ class filterFAI extends filterLDAP{
     $tmp = FAI::get_all_objects_for_given_base($base,$filter);
     $ui = get_userinfo();
     $ldap = $config->get_ldap_link();
-    $ldap->cd($config->current['BASE']);
+    $ldap->cd(store_base());
    
     $result = array();
     foreach($tmp as $entry){
@@ -55,7 +55,7 @@ class filterFAI extends filterLDAP{
           /* Clean up object informations */
           $obj                  = array();
           $obj['cn']            = $object['cn'][0];
-          $obj['dn']            = $object['cn'][0].",".get_ou("faiManagement", "faiBaseRDN").$config->current['BASE'];
+          $obj['dn']            = $object['cn'][0].",".get_ou("faiManagement", "faiBaseRDN").store_base();
           $obj['acl']           = $acl;
           $obj['class']         = $rest ['ACL'];
           $obj['FAIstate']      = $entry['FAIstate'];
@@ -99,7 +99,7 @@ class filterFAI extends filterLDAP{
 
 
     // Append opsi stuff ... 
-    if(class_available('opsi') && $base == get_ou("faiManagement", "faiBaseRDN").$config->current['BASE']){
+    if(class_available('opsi') && $base == get_ou("faiManagement", "faiBaseRDN").store_base()){
       $opsi = new opsi($config);
       $objects = array();
       if($opsi instanceof opsi && $opsi->enabled()){
