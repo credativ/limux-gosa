@@ -54,6 +54,7 @@ class LDAP
     var $follow_referral = FALSE;
     var $referrals= array();
     var $max_ldap_query_time = 0;   // 0, empty or negative values will disable this check 
+    var $store_dn_cache = array();
 
     function LDAP($binddn,$bindpw, $hostname, $follow_referral= FALSE, $tls= FALSE)
     {
@@ -386,23 +387,41 @@ class LDAP
         global $config;
 
         if (translate_objectpath_enabled() && str_endswith($logical_dn, $config->current['BASE'])) {
-            // ideally we'd get an srp passed as a parameter
-            $srp = $this->getSearchResource();
-            $this->cat($srp, $logical_dn, array("dn"));
-            if(!$this->success()){
-                return "";
-            }
-            $attrs = $this->fetch($srp);
+            if (isset($this->store_dn_cache[$logical_dn])) {
+                return $this->store_dn_cache[$logical_dn];
+            } else {
+                $store_dn = $this->logicalToStoreDnQuery($logical_dn);
+                if (!empty($store_dn)) {
+                    $this->store_dn_cache[$logical_dn] = $store_dn;
+                }
 
-            return $attrs['dn'];
+                return $store_dn;
+            }
         } else {
             return $logical_dn;
         }
     }
 
+    function logicalToStoreDnQuery($logical_dn)
+    {
+        // ideally we'd get an srp passed as a parameter
+        $srp = $this->getSearchResource();
+        $this->cat($srp, $logical_dn, array("dn"));
+        if(!$this->success()){
+            return "";
+        }
+        $attrs = $this->fetch($srp);
+        return $attrs['dn'];
+    }
+
     function storeToLogicalDn($primaryAttr, $attrs, $store_dn)
     {
-        return LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+        $logical_dn = LDAP::convert($primaryAttr."=".$attrs[$primaryAttr][0].",".$attrs["lhmObjectPath"][0]);
+
+        // add to cache for use by logicalToStoreDn()
+        $this->store_dn_cache[$logical_dn] = $store_dn;
+
+        return $logical_dn;
     }
 
     function search($srp, $filter, $attrs= array(), $filter_unittag=FALSE, $include_empty_tags=FALSE)
