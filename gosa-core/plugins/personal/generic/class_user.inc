@@ -734,18 +734,32 @@ class user extends plugin
   
     /* Delete references to groups */
     $ldap->cd ($this->config->current['BASE']);
-    $ldap->search ("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", array("uid"));
-    while ($ldap->fetch()){
-      $g= new group($this->config, $ldap->getDN());
+    $fetch_attrs = array("cn");
+    if (translate_objectpath_enabled()) {
+        $fetch_attrs[] = "lhmObjectPath";
+    }
+    $ldap->search ("(&(objectClass=posixGroup)(memberUid=".$this->uid."))", $fetch_attrs);
+    while ($attrs = $ldap->fetch()){
+      if (translate_objectpath_enabled()) {
+        $found_dn = $ldap->storeToLogicalDn("cn", $attrs, $ldap->getDN());
+      } else {
+        $found_dn = $ldap->getDN();
+      }
+      $g= new group($this->config, $found_dn);
       $g->removeUser($this->uid);
       $g->save ();
     }
 
     /* Delete references to object groups */
     $ldap->cd ($this->config->current['BASE']);
-    $ldap->search ("(&(objectClass=gosaGroupOfNames)(member=".LDAP::prepare4filter($this->dn)."))", array("cn"));
-    while ($ldap->fetch()){
-      $og= new ogroup($this->config, $ldap->getDN());
+    $ldap->search ("(&(objectClass=gosaGroupOfNames)(member=".LDAP::prepare4filter($this->dn)."))", $fetch_attrs);
+    while ($attrs = $ldap->fetch()){
+      if (translate_objectpath_enabled()) {
+        $found_dn = $ldap->storeToLogicalDn("cn", $attrs, $ldap->getDN());
+      } else {
+        $found_dn = $ldap->getDN();
+      }
+      $og= new ogroup($this->config, $found_dn);
       unset($og->member[$this->dn]);
       $og->save ();
     }

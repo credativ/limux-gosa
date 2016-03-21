@@ -196,7 +196,13 @@ class CopyPasteHandler {
       return(FALSE);
     }
 
-    $data = serialize($ldap->fetch());
+    $attrs = $ldap->fetch();
+    if (translate_objectpath_enabled()) {
+        // use original DN in case it's the object path
+        $attrs['dn'] = $dn;
+    }
+
+    $data = serialize($attrs);
     fwrite($fp,$data,strlen($data));
     fclose($fp);
 

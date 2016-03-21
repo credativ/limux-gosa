@@ -827,6 +827,12 @@ class posixAccount extends plugin
     /* Take care about groupMembership values: add to groups */
     foreach ($this->groupMembership as $key => $value){
       if (!isset($this->savedGroupMembership[$key])){
+        if (translate_objectpath_enabled()) {
+          $ldap = $this->config->get_ldap_link();
+          $ldap->cat($key, array("cn", "lhmObjectPath"));
+          $attrs = $ldap->fetch();
+          $key = $ldap->storeToLogicalDn("cn", $attrs, $key);
+        }
         $g= new grouptabs($this->config,$this->config->data['TABS']['GROUPTABS'], $key,"groups");
         $g->set_acl_base($key);
         $g->by_object['group']->addUser($this->uid);
@@ -838,6 +844,12 @@ class posixAccount extends plugin
     /* Remove groups not listed in groupMembership */
     foreach ($this->savedGroupMembership as $key => $value){
       if (!isset($this->groupMembership[$key])){
+        if (translate_objectpath_enabled()) {
+          $ldap = $this->config->get_ldap_link();
+          $ldap->cat($key, array("cn", "lhmObjectPath"));
+          $attrs = $ldap->fetch();
+          $key = $ldap->storeToLogicalDn("cn", $attrs, $key);
+        }
         $g= new grouptabs($this->config,$this->config->data['TABS']['GROUPTABS'], $key,"groups");
         $g->set_acl_base($key);
         $g->by_object['group']->removeUser ($this->uid);
