@@ -76,7 +76,8 @@ class termgeneric extends plugin
         if(!isset($this->parent->by_object['ogroup'])){
             $ldap = $this->config->get_ldap_link();
             $ldap->cd ($this->config->current['BASE']);
-            $ldap->search("(&(|(objectClass=gotoTerminalTemplate)(objectClass=gotoWorkstationTemplate))(member=".LDAP::prepare4filter($this->dn)."))",array("cn"));
+            $store_dn = $ldap->logicalToStoreDn($this->dn);
+            $ldap->search("(&(|(objectClass=gotoTerminalTemplate)(objectClass=gotoWorkstationTemplate))(member=".LDAP::prepare4filter($store_dn)."))",array("cn"));
             $this->member_of_ogroup = $ldap->count() >= 1;
         }
 
