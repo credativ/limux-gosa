@@ -1670,8 +1670,9 @@ class plugin
   
   protected function get_my_object_group()
   {
+    $store_dn = $this->config->get_ldap_link()->logicalToStoreDn($this->dn);
     $ogroups = get_list(
-      "(&(objectClass=gosaGroupOfNames)(member=".LDAP::prepare4filter($this->dn)."))", 
+      "(&(objectClass=gosaGroupOfNames)(member=".LDAP::prepare4filter($store_dn)."))",
       "ogroups",
       "",
       array('dn')
@@ -1695,12 +1696,23 @@ class plugin
     if ($old_og_dn === $new_og_dn) {
       return;
     } 
+
+    $ldap = $this->config->get_ldap_link();
+    $store_dn = $ldap->logicalToStoreDn($this->dn);
     
     /* Remove from object group and copy inherited settings */
     if ($old_og_dn && !$new_og_dn) {
-      $ogroup = new ogrouptabs($this->config, $this->config->data['TABS']['OGROUPTABS'], $old_og_dn);
-      unset($ogroup->by_object['ogroup']->memberList[$this->dn]);
-      unset($ogroup->by_object['ogroup']->member[$this->dn]);
+      if (translate_objectpath_enabled()) {
+        $ldap->cat($old_og_dn, array("cn", "lhmObjectPath"));
+        $attrs = $ldap->fetch();
+        $old_og_dn_logical = $ldap->storeToLogicalDn("cn", $attrs, $old_og_dn);
+      } else {
+        $old_og_dn_logical = $old_og_dn;
+      }
+
+      $ogroup = new ogrouptabs($this->config, $this->config->data['TABS']['OGROUPTABS'], $old_og_dn_logical);
+      unset($ogroup->by_object['ogroup']->memberList[$store_dn]);
+      unset($ogroup->by_object['ogroup']->member[$store_dn]);
       $ogroup->save();
       return;
     }
@@ -1710,7 +1722,15 @@ class plugin
       $this->remove_from_ogroup($old_og_dn);
     }
     
-    $og = new ogroup($this->config, $new_og_dn);
+    if ($new_og_dn && translate_objectpath_enabled()) {
+      $ldap->cat($new_og_dn, array("cn", "lhmObjectPath"));
+      $attrs = $ldap->fetch();
+      $new_og_dn_logical = $ldap->storeToLogicalDn("cn", $attrs, $new_og_dn);
+    } else {
+      $new_og_dn_logical = $new_og_dn;
+    }
+
+    $og = new ogroup($this->config, $new_og_dn_logical);
     $og->AddDelMembership($this->dn);
     $og->save();
   }
